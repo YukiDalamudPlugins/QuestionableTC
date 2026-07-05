@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
 using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Windowing;
@@ -118,14 +117,8 @@ internal sealed class DalamudInitializer : IDisposable
     internal static void SetupI18N(string language)
     {
         CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(language);
-        string xmlPath = Path.Combine(
-            new FileInfo(typeof(DalamudInitializer).Assembly.Location).DirectoryName ?? "",
-            "Resources", "I18N.xml");
-        if (File.Exists(xmlPath))
-            GlobalLocalizer.Localizer.LoadXML(xmlPath, CultureInfo.CurrentUICulture);
-        else
-            GlobalLocalizer.Localizer.LoadXML(typeof(DalamudInitializer).Assembly, "Resources.I18N.xml",
-                CultureInfo.CurrentUICulture);
+        GlobalLocalizer.Localizer.LoadXML(typeof(DalamudInitializer).Assembly, "Resources.I18N.xml",
+            CultureInfo.CurrentUICulture);
     }
 
     public void Dispose()
