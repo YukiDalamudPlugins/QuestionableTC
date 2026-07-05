@@ -12,6 +12,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 using LLib.GameUI;
 using Microsoft.Extensions.Logging;
 using Questionable.Controller.Steps;
+using Questionable.Controller.Steps.Common;
 using Questionable.Controller.Steps.Interactions;
 using Questionable.Controller.Steps.Shared;
 using Questionable.Data;
@@ -31,6 +32,9 @@ internal sealed class QuestController : MiniTaskController<QuestController>
 
     /// <summary>Seconds to wait after returning from a death before retrying the current step.</summary>
     private const int DeathRecoveryGraceSeconds = 3;
+
+    /// <summary>Consecutive automatic retries on the same quest step before stuck handling gives up.</summary>
+    private const int MaxConsecutiveStuckRetries = 3;
 
     private readonly IClientState _clientState;
     private readonly IGameGui _gameGui;
@@ -82,6 +86,16 @@ internal sealed class QuestController : MiniTaskController<QuestController>
     /// <summary>Quest step a death streak is counted against; the streak resets when the step changes.</summary>
     private (ElementId QuestId, byte Sequence, int Step)? _deathStreakKey;
     private int _deathStreakCount;
+
+    /// <summary>When the current step last showed progress (or was last gated); MinValue = not tracking.</summary>
+    private DateTime _stuckCheckStartedAt = DateTime.MinValue;
+
+    /// <summary>Snapshot used to detect progress between frames; any change resets the stuck timer.</summary>
+    private (ElementId QuestId, byte Sequence, int Step, ITask? Task)? _stuckProgressSnapshot;
+
+    /// <summary>Quest step a stuck-retry streak is counted against; the streak resets when the step changes.</summary>
+    private (ElementId QuestId, byte Sequence, int Step)? _stuckStreakKey;
+    private int _stuckStreakCount;
 
     public QuestController(
         IClientState clientState,
@@ -277,8 +291,116 @@ internal sealed class QuestController : MiniTaskController<QuestController>
             return;
         }
 
+        UpdateStuckDetection();
+
         UpdateCurrentTask();
     }
+
+    /// <summary>
+    ///     Opt-in stuck recovery: if no progress happens on the current step for the configured time
+    ///     and no legitimate wait/gate is active, retries the step (bounded per step, then gives up).
+    /// </summary>
+    private void UpdateStuckDetection()
+    {
+        if (!_configuration.General.AutoRetryOnStuck)
+        {
+            ResetStuckTimer();
+            return;
+        }
+
+        if (AutomationType != EAutomationType.Automatic ||
+            !_clientState.IsLoggedIn ||
+            _clientState.LocalPlayer == null ||
+            CurrentQuest == null ||
+            CurrentQuest.Step == 255 ||
+            _taskQueue.AllTasksComplete ||
+            _handlingDeath ||
+            _gameFunctions.IsOccupied() ||
+            _condition[ConditionFlag.InCombat] ||
+            _condition[ConditionFlag.BetweenAreas] ||
+            _condition[ConditionFlag.BetweenAreas51] ||
+            _movementController.IsPathRunning ||
+            _movementController.IsPathfinding ||
+            !_movementController.IsNavmeshReady ||
+            DateTime.Now < _safeAnimationEnd ||
+            IsLegitWaitTask(_taskQueue.CurrentTaskExecutor?.CurrentTask))
+        {
+            ResetStuckTimer();
+            return;
+        }
+
+        (ElementId QuestId, byte Sequence, int Step, ITask? Task) snapshot =
+            (CurrentQuest.Quest.Id, CurrentQuest.Sequence, CurrentQuest.Step,
+                _taskQueue.CurrentTaskExecutor?.CurrentTask);
+        if (_stuckProgressSnapshot == null || !_stuckProgressSnapshot.Value.Equals(snapshot))
+        {
+            _stuckProgressSnapshot = snapshot;
+            _stuckCheckStartedAt = DateTime.Now;
+            return;
+        }
+
+        int threshold = Math.Clamp(_configuration.General.StuckRetryThresholdSeconds, 30, 300);
+        if (DateTime.Now < _stuckCheckStartedAt.AddSeconds(threshold))
+            return;
+
+        ResetStuckTimer();
+
+        int retries = RecordStuckRetry();
+        if (retries >= MaxConsecutiveStuckRetries)
+        {
+            _logger.LogError("No progress after {Retries} automatic retries on the same step — stopping", retries);
+            _chatGui.PrintError(
+                _LF("Still stuck after {0} retries, stopping.", MaxConsecutiveStuckRetries),
+                CommandHandler.MessageTag, CommandHandler.TagColor);
+            StopAllDueToConditionFailed("Stuck too many times");
+            return;
+        }
+
+        _logger.LogWarning(
+            "No progress for {Threshold} seconds, retrying current step (quest: {QuestId}, sequence: {Sequence}, step: {Step}, retry {Retry}/{Max})",
+            threshold, CurrentQuest.Quest.Id, CurrentQuest.Sequence, CurrentQuest.Step, retries,
+            MaxConsecutiveStuckRetries);
+        _chatGui.Print(
+            _LF("No progress for {0} seconds, retrying current step ({1}/{2}).", threshold, retries,
+                MaxConsecutiveStuckRetries),
+            CommandHandler.MessageTag, CommandHandler.TagColor);
+        ExecuteNextStep();
+    }
+
+    private void ResetStuckTimer()
+    {
+        _stuckCheckStartedAt = DateTime.MinValue;
+        _stuckProgressSnapshot = null;
+    }
+
+    /// <summary>
+    ///     Increments the stuck-retry counter for the current quest step, resetting it when the step changes.
+    /// </summary>
+    private int RecordStuckRetry()
+    {
+        (ElementId QuestId, byte Sequence, int Step)? key = CurrentQuest is { } current
+            ? (current.Quest.Id, current.Sequence, current.Step)
+            : null;
+        if (_stuckStreakKey != key)
+        {
+            _stuckStreakKey = key;
+            _stuckStreakCount = 0;
+        }
+
+        return ++_stuckStreakCount;
+    }
+
+    /// <summary>Tasks that legitimately wait on game state for an unbounded time — never count as stuck.</summary>
+    private static bool IsLegitWaitTask(ITask? task) =>
+        task is WaitAtEnd.WaitNextStepOrSequence
+            or WaitAtEnd.WaitForCompletionFlags
+            or WaitAtEnd.WaitObjectAtPosition
+            or WaitAtEnd.WaitQuestAccepted
+            or WaitAtEnd.WaitQuestCompleted
+            or WaitAtEnd.WaitDelay
+            or WaitCondition.Task
+            or Duty.WaitAutoDutyTask
+            or SinglePlayerDuty.WaitSinglePlayerDuty;
 
     private void UpdateCurrentQuest()
     {
@@ -570,6 +692,9 @@ internal sealed class QuestController : MiniTaskController<QuestController>
         _handlingDeath = false;
         _deathStreakKey = null;
         _deathStreakCount = 0;
+        ResetStuckTimer();
+        _stuckStreakKey = null;
+        _stuckStreakCount = 0;
         using var scope = _logger.BeginScope($"Stop/{label}");
         if (IsRunning || AutomationType != EAutomationType.Manual)
         {

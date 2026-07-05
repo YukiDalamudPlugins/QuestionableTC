@@ -208,6 +208,43 @@ internal sealed class GeneralConfigComponent : ConfigComponent
                     }
                 }
             }
+
+            bool autoRetryOnStuck = Configuration.General.AutoRetryOnStuck;
+            if (ImGui.Checkbox(_L("Automatically retry the current step when stuck"), ref autoRetryOnStuck))
+            {
+                Configuration.General.AutoRetryOnStuck = autoRetryOnStuck;
+                Save();
+            }
+
+            ImGui.SameLine();
+            using (ImRaii.PushFont(UiBuilder.IconFont))
+            {
+                ImGui.TextDisabled(FontAwesomeIcon.InfoCircle.ToIconString());
+            }
+
+            if (ImGui.IsItemHovered())
+            {
+                using (ImRaii.Tooltip())
+                {
+                    ImGui.Text(_L("If no progress is made for the configured time, Questionable restarts the current quest step."));
+                    ImGui.Text(_L("Waits for cutscenes, dialogue, combat, movement and duties never count as being stuck."));
+                    ImGui.Text(_L("After 3 unsuccessful retries on the same step, questing stops with an error."));
+                }
+            }
+
+            if (autoRetryOnStuck)
+            {
+                using (ImRaii.PushIndent())
+                {
+                    int stuckThreshold = Configuration.General.StuckRetryThresholdSeconds;
+                    ImGui.SetNextItemWidth(200);
+                    if (ImGui.SliderInt(_L("Stuck detection threshold (seconds)"), ref stuckThreshold, 30, 180))
+                    {
+                        Configuration.General.StuckRetryThresholdSeconds = stuckThreshold;
+                        Save();
+                    }
+                }
+            }
         }
     }
 }

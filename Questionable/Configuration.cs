@@ -37,6 +37,8 @@ internal sealed class Configuration : IPluginConfiguration
         public bool ShowIncompleteSeasonalEvents { get; set; } = true;
         public bool SkipLowPriorityDuties { get; set; }
         public bool ConfigureTextAdvance { get; set; } = true;
+        public bool AutoRetryOnStuck { get; set; }
+        public int StuckRetryThresholdSeconds { get; set; } = 60;
         public string Language { get; set; } = "en";
     }
 

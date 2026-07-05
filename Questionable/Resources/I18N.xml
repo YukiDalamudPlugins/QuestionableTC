@@ -162,6 +162,11 @@
     <Value lang="zh-tw">高階</Value>
   </Entry>
   <Entry>
+    <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs -->
+    <Key>After 3 unsuccessful retries on the same step, questing stops with an error.</Key>
+    <Value lang="zh-tw">同一步驟重試 3 次仍失敗時，將停止任務並顯示錯誤。</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\ConfigComponents\PluginConfigComponent.cs -->
     <Key>All required plugins are installed.</Key>
     <Value lang="ja-jp">必要なプラグインはすべてインストール済みです。</Value>
@@ -251,6 +256,11 @@
     <Value lang="ja-jp">TextAdvanceを推奨設定で自動設定</Value>
     <Value lang="zh-cn">使用推荐设置自动配置 TextAdvance</Value>
     <Value lang="zh-tw">使用推薦設定自動設定 TextAdvance</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs -->
+    <Key>Automatically retry the current step when stuck</Key>
+    <Value lang="zh-tw">卡住時自動重試目前步驟</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\ConfigComponents\PluginConfigComponent.cs -->
@@ -921,6 +931,11 @@
     <Value lang="zh-tw">ID</Value>
   </Entry>
   <Entry>
+    <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs -->
+    <Key>If no progress is made for the configured time, Questionable restarts the current quest step.</Key>
+    <Value lang="zh-tw">若在設定的時間內沒有任何進度，Questionable 會重新執行目前的任務步驟。</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\ConfigComponents\DebugConfigComponent.cs -->
     <Key>If not done during the MSQ by Questionable, you have to manually pick up any missed aether currents/quests. There is no way to automatically pick up all missing aether currents.</Key>
     <Value lang="zh-tw">如果 Questionable 沒有在主線過程中完成，你必須手動接取遺漏的風脈泉/風脈任務。沒有辦法自動接取所有遺漏的風脈泉。</Value>
@@ -1301,6 +1316,11 @@
     <Value lang="ja-jp">候補クエストが見つかりません</Value>
     <Value lang="zh-cn">未找到候选任务</Value>
     <Value lang="zh-tw">未找到候選任務</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Controller\QuestController.cs -->
+    <Key>No progress for {0} seconds, retrying current step ({1}/{2}).</Key>
+    <Value lang="zh-tw">已 {0} 秒沒有進度，重試目前步驟（{1}/{2}）。</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\JournalComponents\QuestJournalComponent.cs -->
@@ -2071,6 +2091,11 @@
     <Value lang="zh-tw">步驟：{0} / {1}</Value>
   </Entry>
   <Entry>
+    <!-- Found in: Controller\QuestController.cs -->
+    <Key>Still stuck after {0} retries, stopping.</Key>
+    <Value lang="zh-tw">重試 {0} 次後仍然卡住，停止執行。</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Controller\CommandHandler.cs -->
     <Key>Stop command</Key>
     <Value lang="ja-jp">停止コマンド</Value>
@@ -2083,6 +2108,11 @@
     <Value lang="ja-jp">紅蓮のリベレーター</Value>
     <Value lang="zh-cn">红莲之狂潮</Value>
     <Value lang="zh-tw">紅蓮之狂潮</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs -->
+    <Key>Stuck detection threshold (seconds)</Key>
+    <Value lang="zh-tw">卡住偵測門檻（秒）</Value>
   </Entry>
   <Entry>
     <!-- Found in: (dynamic) -->
@@ -2398,6 +2428,11 @@
     <Value lang="ja-jp">ヴァイパー</Value>
     <Value lang="zh-cn">蝰蛇剑士</Value>
     <Value lang="zh-tw">蝰蛇劍士</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs -->
+    <Key>Waits for cutscenes, dialogue, combat, movement and duties never count as being stuck.</Key>
+    <Value lang="zh-tw">過場動畫、對話、戰鬥、移動與副本等待不會被視為卡住。</Value>
   </Entry>
   <Entry>
     <!-- Found in: (dynamic) -->
