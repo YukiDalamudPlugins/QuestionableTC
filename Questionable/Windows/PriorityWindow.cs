@@ -131,7 +131,7 @@ internal sealed class PriorityWindow : LWindow
                 bool addThis = ImGui.Selectable(quest.Info.Name);
                 if (addThis || addFirst)
                 {
-                    _questController.ManualPriorityQuests.Add(quest);
+                    AddQuestWithPrerequisites(quest);
 
                     if (addFirst)
                     {
@@ -145,6 +145,29 @@ internal sealed class PriorityWindow : LWindow
         }
 
         ImGui.Spacing();
+    }
+
+    /// <summary>
+    ///     Adds a quest to the priority list; if it is locked behind incomplete prerequisites with
+    ///     known quest paths, the whole chain is inserted before it in dependency order.
+    /// </summary>
+    private void AddQuestWithPrerequisites(Quest quest)
+    {
+        if (_questFunctions.IsQuestLocked(quest.Id))
+        {
+            List<Quest>? prerequisites = _questFunctions.GetIncompletePrerequisites(quest.Id);
+            if (prerequisites is { Count: > 0 })
+            {
+                foreach (Quest prerequisite in prerequisites)
+                {
+                    if (_questController.ManualPriorityQuests.All(x => x.Id != prerequisite.Id))
+                        _questController.ManualPriorityQuests.Add(prerequisite);
+                }
+            }
+        }
+
+        if (_questController.ManualPriorityQuests.All(x => x.Id != quest.Id))
+            _questController.ManualPriorityQuests.Add(quest);
     }
 
     private void DrawQuestList()

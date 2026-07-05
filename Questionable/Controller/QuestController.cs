@@ -999,11 +999,18 @@ internal sealed class QuestController : MiniTaskController<QuestController>
             ? targetQuest.Info.Name
             : targetQuestId.ToString();
         _logger.LogInformation(
-            "Quest {QuestId} is locked, scheduling prerequisite {PrerequisiteId} first ({Count} in chain)",
-            targetQuestId, firstAvailable.Id, prerequisites.Count);
+            "Quest {QuestId} is locked, scheduling {Count} prerequisite quest(s), starting with {PrerequisiteId}",
+            targetQuestId, prerequisites.Count, firstAvailable.Id);
         _chatGui.Print(
             _LF("Quest '{0}' is locked, doing prerequisite '{1}' first.", targetName, firstAvailable.Info.Name),
             CommandHandler.MessageTag, CommandHandler.TagColor);
+
+        // put the whole chain (dependency order) plus the target into the priority list; the
+        // automatic runner picks the first acceptable/accepted entry each frame and skips
+        // completed ones, so the chain continues on its own after each prerequisite completes
+        foreach (Quest prerequisite in prerequisites)
+            AddQuestPriority(prerequisite.Id);
+        AddQuestPriority(targetQuestId);
 
         SetNextQuest(firstAvailable);
         return true;
