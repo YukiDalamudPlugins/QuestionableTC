@@ -97,6 +97,9 @@ internal sealed class QuestController : MiniTaskController<QuestController>
     private (ElementId QuestId, byte Sequence, int Step)? _stuckStreakKey;
     private int _stuckStreakCount;
 
+    /// <summary>Locked quests we already tried to unlock via prerequisites this automation session.</summary>
+    private readonly HashSet<ElementId> _prereqAttempted = [];
+
     public QuestController(
         IClientState clientState,
         IGameGui gameGui,
@@ -493,6 +496,17 @@ internal sealed class QuestController : MiniTaskController<QuestController>
                     currentQuestId = priorityQuest.Item1;
                     currentSequence = priorityQuest.Item2;
                 }
+                else if (AutomationType == EAutomationType.Automatic)
+                {
+                    // a priority quest that is locked behind prerequisites would be skipped forever;
+                    // try to unlock it by doing the prerequisite chain first
+                    Quest? lockedPriorityQuest = ManualPriorityQuests.FirstOrDefault(x =>
+                        !_questFunctions.IsQuestAcceptedOrComplete(x.Id) &&
+                        _questFunctions.IsQuestLocked(x.Id) &&
+                        !_prereqAttempted.Contains(x.Id));
+                    if (lockedPriorityQuest != null && TrySchedulePrerequisites(lockedPriorityQuest.Id))
+                        return;
+                }
 
                 if (currentQuestId == null || currentQuestId.Value == 0)
                 {
@@ -695,6 +709,7 @@ internal sealed class QuestController : MiniTaskController<QuestController>
         ResetStuckTimer();
         _stuckStreakKey = null;
         _stuckStreakCount = 0;
+        _prereqAttempted.Clear();
         using var scope = _logger.BeginScope($"Stop/{label}");
         if (IsRunning || AutomationType != EAutomationType.Manual)
         {
@@ -842,6 +857,62 @@ internal sealed class QuestController : MiniTaskController<QuestController>
             _nextQuest = new QuestProgress(quest);
         else
             _nextQuest = null;
+    }
+
+    /// <summary>
+    ///     If <paramref name="targetQuestId"/> is locked behind incomplete prerequisites, schedules the
+    ///     first available prerequisite as the next quest so the chain gets completed automatically.
+    ///     Each target is attempted at most once per automation session to avoid loops on bad data.
+    /// </summary>
+    public bool TrySchedulePrerequisites(ElementId targetQuestId)
+    {
+        if (!_prereqAttempted.Add(targetQuestId))
+            return false;
+
+        // upstream 6b8321a98: never chase prerequisites of a quest that can't be obtained at all
+        if (_questFunctions.IsQuestUnobtainable(targetQuestId))
+        {
+            _logger.LogInformation("Quest {QuestId} is unobtainable, not scheduling prerequisites", targetQuestId);
+            return false;
+        }
+
+        List<Quest>? prerequisites = _questFunctions.GetIncompletePrerequisites(targetQuestId);
+        if (prerequisites == null)
+        {
+            _logger.LogInformation(
+                "Quest {QuestId} is locked and its prerequisite chain can't be done automatically (missing path or disabled)",
+                targetQuestId);
+            return false;
+        }
+
+        if (prerequisites.Count == 0)
+        {
+            _logger.LogInformation("Quest {QuestId} is locked, but no incomplete prerequisite quests were found",
+                targetQuestId);
+            return false;
+        }
+
+        Quest? firstAvailable = prerequisites.FirstOrDefault(x => _questFunctions.IsReadyToAcceptQuest(x.Id));
+        if (firstAvailable == null)
+        {
+            _logger.LogInformation(
+                "Quest {QuestId} is locked, but none of its {Count} prerequisite quests can be accepted right now",
+                targetQuestId, prerequisites.Count);
+            return false;
+        }
+
+        string targetName = _questRegistry.TryGetQuest(targetQuestId, out Quest? targetQuest)
+            ? targetQuest.Info.Name
+            : targetQuestId.ToString();
+        _logger.LogInformation(
+            "Quest {QuestId} is locked, scheduling prerequisite {PrerequisiteId} first ({Count} in chain)",
+            targetQuestId, firstAvailable.Id, prerequisites.Count);
+        _chatGui.Print(
+            _LF("Quest '{0}' is locked, doing prerequisite '{1}' first.", targetName, firstAvailable.Info.Name),
+            CommandHandler.MessageTag, CommandHandler.TagColor);
+
+        SetNextQuest(firstAvailable);
+        return true;
     }
 
     public void SetGatheringQuest(Quest? quest)

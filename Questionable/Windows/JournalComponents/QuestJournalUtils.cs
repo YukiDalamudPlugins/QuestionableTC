@@ -39,6 +39,19 @@ internal sealed class QuestJournalUtils
             _questController.Start(label);
         }
 
+        if (ImGui.MenuItem(_L("Add all prerequisites to priority list"),
+                quest != null && !_questFunctions.IsQuestAcceptedOrComplete(questInfo.QuestId)))
+        {
+            var prerequisites = _questFunctions.GetIncompletePrerequisites(questInfo.QuestId);
+            if (prerequisites != null)
+            {
+                foreach (var prerequisite in prerequisites)
+                    _questController.AddQuestPriority(prerequisite.Id);
+            }
+
+            _questController.AddQuestPriority(questInfo.QuestId);
+        }
+
         bool openInQuestMap = _commandManager.Commands.ContainsKey("/questinfo");
         if (ImGui.MenuItem(_L("View in Quest Map"), questInfo.QuestId is QuestId && openInQuestMap))
         {

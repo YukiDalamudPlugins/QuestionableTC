@@ -540,9 +540,6 @@ internal sealed unsafe class QuestFunctions
                 return false;
         }
 
-        if (IsQuestLocked(questId))
-            return false;
-
         if (!ignoreLevel)
         {
             // if we're not at a high enough level to continue, we also ignore it
@@ -550,6 +547,9 @@ internal sealed unsafe class QuestFunctions
             if (currentLevel != 0 && quest != null && quest.Info.Level > currentLevel)
                 return false;
         }
+
+        if (IsQuestLocked(questId))
+            return false;
 
         return true;
     }
@@ -855,6 +855,71 @@ internal sealed unsafe class QuestFunctions
     public bool IsMainScenarioQuestComplete()
     {
         return IsQuestComplete(_questData.LastMainScenarioQuestId);
+    }
+
+    /// <summary>
+    ///     Returns the incomplete prerequisite quests of <paramref name="questId"/> in dependency order
+    ///     (quests with fewer own prerequisites first), recursing up to 20 levels and stopping at MSQ
+    ///     quests. Returns null if any quest in the chain has no quest path or is disabled, i.e. the
+    ///     chain can't be completed automatically.
+    /// </summary>
+    public List<Quest>? GetIncompletePrerequisites(ElementId questId)
+    {
+        Dictionary<ElementId, Quest> collected = [];
+        if (!CollectIncompletePrerequisites(questId, collected, depth: 0))
+            return null;
+
+        return collected.Values
+            .OrderBy(x => ((QuestInfo)_questData.GetQuestInfo(x.Id)).PreviousQuests.Count)
+            .ToList();
+    }
+
+    private bool CollectIncompletePrerequisites(ElementId questId, Dictionary<ElementId, Quest> collected, int depth)
+    {
+        if (depth > 20)
+            return false;
+
+        if (!_questData.TryGetQuestInfo(questId, out IQuestInfo? iQuestInfo) || iQuestInfo is not QuestInfo questInfo)
+            return true;
+
+        IEnumerable<PreviousQuestInfo> required;
+        if (questInfo.PreviousQuestJoin == EQuestJoin.AtLeastOne && questInfo.PreviousQuests.Count > 0)
+        {
+            if (questInfo.PreviousQuests.Any(x => HasEnoughProgressOnPreviousQuest(x)))
+                return true;
+
+            // none completed: pick the first prerequisite that is itself obtainable
+            PreviousQuestInfo? candidate = questInfo.PreviousQuests
+                .FirstOrDefault(x => !IsQuestUnobtainable(x.QuestId));
+            if (candidate == null)
+                return false;
+
+            required = [candidate];
+        }
+        else
+            required = questInfo.PreviousQuests.Where(x => !HasEnoughProgressOnPreviousQuest(x));
+
+        foreach (PreviousQuestInfo previousQuest in required)
+        {
+            if (collected.ContainsKey(previousQuest.QuestId))
+                continue;
+
+            if (_questData.TryGetQuestInfo(previousQuest.QuestId, out IQuestInfo? previousInfo) &&
+                previousInfo is QuestInfo { IsMainScenarioQuest: true })
+                continue;
+
+            if (IsQuestUnobtainable(previousQuest.QuestId))
+                return false;
+
+            if (!_questRegistry.TryGetQuest(previousQuest.QuestId, out Quest? quest) || quest.Root.Disabled)
+                return false;
+
+            collected[previousQuest.QuestId] = quest;
+            if (!CollectIncompletePrerequisites(previousQuest.QuestId, collected, depth + 1))
+                return false;
+        }
+
+        return true;
     }
 }
 

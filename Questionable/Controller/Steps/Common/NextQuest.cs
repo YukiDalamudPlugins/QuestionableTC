@@ -47,10 +47,23 @@ internal static class NextQuest
                 logger.LogInformation("Won't set next quest to {QuestId}, automation type is CurrentQuestOnly", Task.NextQuestId);
                 questController.SetNextQuest(null);
             }
+            else if (questFunctions.IsQuestUnobtainable(Task.NextQuestId, Task.CurrentQuestId))
+            {
+                logger.LogInformation("Can't set next quest to {QuestId}, quest is unobtainable", Task.NextQuestId);
+                questController.SetNextQuest(null);
+            }
             else if (questFunctions.IsQuestLocked(Task.NextQuestId, Task.CurrentQuestId))
             {
-                logger.LogInformation("Can't set next quest to {QuestId}, quest is locked", Task.NextQuestId);
-                questController.SetNextQuest(null);
+                if (questController.TrySchedulePrerequisites(Task.NextQuestId))
+                {
+                    logger.LogInformation(
+                        "Next quest {QuestId} is locked, scheduled a prerequisite quest instead", Task.NextQuestId);
+                }
+                else
+                {
+                    logger.LogInformation("Can't set next quest to {QuestId}, quest is locked", Task.NextQuestId);
+                    questController.SetNextQuest(null);
+                }
             }
             else if (questRegistry.TryGetQuest(Task.NextQuestId, out Quest? quest))
             {

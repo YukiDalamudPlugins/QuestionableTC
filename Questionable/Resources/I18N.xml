@@ -155,6 +155,11 @@
     <Value lang="zh-tw">新增任務...</Value>
   </Entry>
   <Entry>
+    <!-- Found in: Windows\JournalComponents\QuestJournalUtils.cs -->
+    <Key>Add all prerequisites to priority list</Key>
+    <Value lang="zh-tw">將所有前置任務加入優先清單</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\ConfigComponents\DebugConfigComponent.cs -->
     <Key>Advanced</Key>
     <Value lang="ja-jp">詳細設定</Value>
@@ -1588,6 +1593,11 @@
     <Value lang="ja-jp">クエスト</Value>
     <Value lang="zh-cn">任务</Value>
     <Value lang="zh-tw">任務</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Controller\QuestController.cs -->
+    <Key>Quest '{0}' is locked, doing prerequisite '{1}' first.</Key>
+    <Value lang="zh-tw">任務「{0}」尚未解鎖，先執行前置任務「{1}」。</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\ConfigComponents\SinglePlayerDutyConfigComponent.cs -->

@@ -9,6 +9,8 @@
   "Stuck detection threshold (seconds)": "卡住偵測門檻（秒）",
   "No progress for {0} seconds, retrying current step ({1}/{2}).": "已 {0} 秒沒有進度，重試目前步驟（{1}/{2}）。",
   "Still stuck after {0} retries, stopping.": "重試 {0} 次後仍然卡住，停止執行。",
+  "Quest '{0}' is locked, doing prerequisite '{1}' first.": "任務「{0}」尚未解鎖，先執行前置任務「{1}」。",
+  "Add all prerequisites to priority list": "將所有前置任務加入優先清單",
   "Magical Ranged Role Quests": "遠程魔法職能任務",
   "Physical Ranged Role Quests": "遠程物理職能任務",
   "Available (Complete)": "可接取（已完成）",
