@@ -4,3 +4,4 @@ bin/
 /.vs
 /.vscode
 *.user
+upstream_i18n.xml
