@@ -2475,6 +2475,11 @@
     <Value lang="zh-tw">你可以覆蓋每個任務戰鬥的設定：</Value>
   </Entry>
   <Entry>
+    <!-- Found in: Controller\QuestController.cs -->
+    <Key>You died {0} times, manual intervention needed.</Key>
+    <Value lang="zh-tw">你已死亡 {0} 次，需要手動處理。</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Controller\CommandHandler.cs -->
     <Key>You don't have the debug overlay enabled.</Key>
     <Value lang="ja-jp">デバッグオーバーレイが有効になっていません。</Value>

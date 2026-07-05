@@ -8,6 +8,8 @@ using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.UI;
+using LLib.GameUI;
 using Microsoft.Extensions.Logging;
 using Questionable.Controller.Steps;
 using Questionable.Controller.Steps.Interactions;
@@ -17,13 +19,21 @@ using Questionable.Functions;
 using Questionable.Model;
 using Questionable.Model.Questing;
 using Questionable.Windows.ConfigComponents;
+using static Questionable.Utils.LocalizeShortcut;
 using Quest = Questionable.Model.Quest;
 
 namespace Questionable.Controller;
 
 internal sealed class QuestController : MiniTaskController<QuestController>
 {
+    /// <summary>Consecutive deaths on the same quest step before death handling gives up and stops.</summary>
+    private const int MaxConsecutiveDeaths = 5;
+
+    /// <summary>Seconds to wait after returning from a death before retrying the current step.</summary>
+    private const int DeathRecoveryGraceSeconds = 3;
+
     private readonly IClientState _clientState;
+    private readonly IGameGui _gameGui;
     private readonly GameFunctions _gameFunctions;
     private readonly QuestFunctions _questFunctions;
     private readonly MovementController _movementController;
@@ -60,8 +70,22 @@ internal sealed class QuestController : MiniTaskController<QuestController>
     /// </summary>
     private DateTime _lastTaskUpdate = DateTime.Now;
 
+    /// <summary>True while recovering from the player's death (waiting for the return prompt / respawn).</summary>
+    private bool _handlingDeath;
+
+    /// <summary>When the player regained consciousness after a death; used to let the zone settle.</summary>
+    private DateTime _respawnedAt = DateTime.MinValue;
+
+    /// <summary>Throttle for re-confirming the return-to-respawn prompt while the player is dead.</summary>
+    private DateTime _lastReturnConfirmAt = DateTime.MinValue;
+
+    /// <summary>Quest step a death streak is counted against; the streak resets when the step changes.</summary>
+    private (ElementId QuestId, byte Sequence, int Step)? _deathStreakKey;
+    private int _deathStreakCount;
+
     public QuestController(
         IClientState clientState,
+        IGameGui gameGui,
         GameFunctions gameFunctions,
         QuestFunctions questFunctions,
         MovementController movementController,
@@ -82,6 +106,7 @@ internal sealed class QuestController : MiniTaskController<QuestController>
         : base(chatGui, condition, serviceProvider, interruptHandler, dataManager, logger)
     {
         _clientState = clientState;
+        _gameGui = gameGui;
         _gameFunctions = gameFunctions;
         _questFunctions = questFunctions;
         _movementController = movementController;
@@ -218,10 +243,16 @@ internal sealed class QuestController : MiniTaskController<QuestController>
             {
                 // ignoring death in a dungeon if it is being run by AD
             }
-            else if (!_taskQueue.AllTasksComplete)
+            else if (!_taskQueue.AllTasksComplete || _handlingDeath)
             {
-                StopAllDueToConditionFailed("HP = 0");
+                BeginDeathHandling();
+                return;
             }
+        }
+        else if (_handlingDeath)
+        {
+            FinishDeathHandling();
+            return;
         }
         else if (_configuration.General.UseEscToCancelQuesting && _keyState[VirtualKey.ESCAPE])
         {
@@ -536,6 +567,9 @@ internal sealed class QuestController : MiniTaskController<QuestController>
 
     public override void Stop(string label)
     {
+        _handlingDeath = false;
+        _deathStreakKey = null;
+        _deathStreakCount = 0;
         using var scope = _logger.BeginScope($"Stop/{label}");
         if (IsRunning || AutomationType != EAutomationType.Manual)
         {
@@ -554,6 +588,98 @@ internal sealed class QuestController : MiniTaskController<QuestController>
         _movementController.Stop();
         _combatController.Stop(label);
         _gatheringController.Stop(label);
+    }
+
+    /// <summary>
+    ///     Recovers from the player dying during questing: on the first frame it stops the current
+    ///     tasks, then every frame it confirms the return-to-respawn prompt until the player respawns.
+    /// </summary>
+    private void BeginDeathHandling()
+    {
+        if (!_handlingDeath)
+        {
+            _handlingDeath = true;
+            _respawnedAt = DateTime.MinValue;
+            _lastReturnConfirmAt = DateTime.MinValue;
+            _logger.LogWarning("Player died while questing — waiting to return and retry the current step");
+            ClearTasksInternal();
+            _movementController.Stop();
+        }
+
+        ConfirmReturnPrompt();
+    }
+
+    /// <summary>Confirms the "Return?" SelectYesno that appears after death, throttled while it is open.</summary>
+    private unsafe void ConfirmReturnPrompt()
+    {
+        if (DateTime.Now - _lastReturnConfirmAt < TimeSpan.FromMilliseconds(500))
+            return;
+
+        if (!_gameGui.TryGetAddonByName("SelectYesno", out AddonSelectYesno* addon) ||
+            !LAddon.IsAddonReady(&addon->AtkUnitBase))
+            return;
+
+        _lastReturnConfirmAt = DateTime.Now;
+        _logger.LogInformation("Confirming return-to-respawn prompt");
+        addon->AtkUnitBase.FireCallbackInt(0);
+    }
+
+    /// <summary>
+    ///     Continues recovering after the player regained consciousness: waits for the zone to settle,
+    ///     then retries the current step — or stops with an error after too many deaths on it.
+    /// </summary>
+    private void FinishDeathHandling()
+    {
+        if (!_clientState.IsLoggedIn ||
+            _condition[ConditionFlag.BetweenAreas] ||
+            _condition[ConditionFlag.BetweenAreas51] ||
+            _clientState.LocalPlayer == null)
+        {
+            _respawnedAt = DateTime.MinValue;
+            return;
+        }
+
+        if (_respawnedAt == DateTime.MinValue)
+        {
+            _respawnedAt = DateTime.Now;
+            return;
+        }
+
+        if (DateTime.Now - _respawnedAt < TimeSpan.FromSeconds(DeathRecoveryGraceSeconds))
+            return;
+
+        _handlingDeath = false;
+
+        int deaths = RecordDeath();
+        if (deaths >= MaxConsecutiveDeaths)
+        {
+            _logger.LogError("Player died {Deaths} times on the same step — stopping", deaths);
+            _chatGui.PrintError(
+                _LF("You died {0} times, manual intervention needed.", MaxConsecutiveDeaths),
+                CommandHandler.MessageTag, CommandHandler.TagColor);
+            StopAllDueToConditionFailed("Died too many times");
+            return;
+        }
+
+        _logger.LogInformation("Retrying current step after death ({Deaths}/{Max})", deaths, MaxConsecutiveDeaths);
+        ExecuteNextStep();
+    }
+
+    /// <summary>
+    ///     Increments the death counter for the current quest step, resetting it when the step changes.
+    /// </summary>
+    private int RecordDeath()
+    {
+        (ElementId QuestId, byte Sequence, int Step)? key = CurrentQuest is { } current
+            ? (current.Quest.Id, current.Sequence, current.Step)
+            : null;
+        if (_deathStreakKey != key)
+        {
+            _deathStreakKey = key;
+            _deathStreakCount = 0;
+        }
+
+        return ++_deathStreakCount;
     }
 
     private void CheckNextTasks(string label)

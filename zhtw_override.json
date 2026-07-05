@@ -1,6 +1,7 @@
 {
   " (Melee/Phys. Ranged)": " (近戰/遠程物理)",
   "Immortal Flames": "不滅隊",
+  "You died {0} times, manual intervention needed.": "你已死亡 {0} 次，需要手動處理。",
   "Magical Ranged Role Quests": "遠程魔法職能任務",
   "Physical Ranged Role Quests": "遠程物理職能任務",
   "Available (Complete)": "可接取（已完成）",
