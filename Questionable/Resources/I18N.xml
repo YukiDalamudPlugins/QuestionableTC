@@ -2492,6 +2492,13 @@
     <Value lang="zh-tw">使用預迴圈/迴圈/後迴圈設定</Value>
   </Entry>
   <Entry>
+    <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs -->
+    <Key>Use aetheryte tickets where available</Key>
+    <Value lang="ja-jp">転送網利用券が使用可能な場合は使用する</Value>
+    <Value lang="zh-cn">在可用时使用传送网使用券</Value>
+    <Value lang="zh-tw">可用時使用傳送網券</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\ConfigComponents\PluginConfigComponent.cs -->
     <Key>Used to travel to aethernet shards in cities.</Key>
     <Value lang="ja-jp">都市内のエーテライトへの移動に使用します。</Value>

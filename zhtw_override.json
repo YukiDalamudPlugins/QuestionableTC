@@ -23,6 +23,7 @@
   "Completed quest '{0}', which is configured as a stopping point.": "已完成設為停止點的任務「{0}」。",
   "Accepted quest '{0}', which is configured as a stopping point.": "已接受設為停止點的任務「{0}」。",
   "Reached or exceeded target level {0}.": "已達到或超過目標等級 {0}。",
+  "Use aetheryte tickets where available": "可用時使用傳送網券",
   "Magical Ranged Role Quests": "遠程魔法職能任務",
   "Physical Ranged Role Quests": "遠程物理職能任務",
   "Available (Complete)": "可接取（已完成）",

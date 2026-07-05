@@ -209,6 +209,13 @@ internal sealed class GeneralConfigComponent : ConfigComponent
                 }
             }
 
+            bool useTickets = Configuration.General.UseTickets;
+            if (ImGui.Checkbox(_L("Use aetheryte tickets where available"), ref useTickets))
+            {
+                Configuration.General.UseTickets = useTickets;
+                Save();
+            }
+
             bool autoRetryOnStuck = Configuration.General.AutoRetryOnStuck;
             if (ImGui.Checkbox(_L("Automatically retry the current step when stuck"), ref autoRetryOnStuck))
             {

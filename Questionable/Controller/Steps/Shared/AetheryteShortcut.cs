@@ -55,6 +55,7 @@ internal static class AetheryteShortcut
         ILogger<UseAetheryteShortcut> logger,
         AetheryteFunctions aetheryteFunctions,
         QuestFunctions questFunctions,
+        GameFunctions gameFunctions,
         IClientState clientState,
         IChatGui chatGui,
         ICondition condition,
@@ -197,8 +198,35 @@ internal static class AetheryteShortcut
                             logger.LogInformation("Skipping aetheryte teleport");
                             return true;
                         }
+
+                        // upstream cost check: teleporting takes ~1.5 minutes of casting, loading and
+                        // running back out from the aetheryte; if walking directly is shorter, do that
+                        if (Task.Step.Position != null)
+                        {
+                            const float teleportTimeDistance = 90f;
+                            float distanceToTarget = (pos - Task.Step.Position.Value).Length();
+                            float teleportRouteDistance = teleportTimeDistance +
+                                (Task.Step.AethernetShortcut != null
+                                    ? aetheryteData.CalculateDistance(Task.Step.Position.Value, territoryType,
+                                        Task.Step.AethernetShortcut.To)
+                                    : aetheryteData.CalculateDistance(Task.Step.Position.Value, territoryType,
+                                        Task.TargetAetheryte));
+                            if (distanceToTarget < teleportRouteDistance)
+                            {
+                                logger.LogInformation(
+                                    "Skipping aetheryte teleport, walking is shorter (direct: {Direct:F0}, teleport route: {Route:F0})",
+                                    distanceToTarget, teleportRouteDistance);
+                                return true;
+                            }
+                        }
                     }
                 }
+            }
+
+            if (gameFunctions.HasStatusPreventingSprint()) // transporting etc.
+            {
+                logger.LogInformation("Skipping aetheryte teleport, character is busy");
+                return true;
             }
 
             return false;
