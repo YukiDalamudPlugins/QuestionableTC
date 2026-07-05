@@ -652,12 +652,6 @@ internal sealed class InteractionUiController : IDisposable
             _logger.LogInformation("SinglePlayerDutyYesNo: probably Single Player Duty");
             return true;
         }
-            else
-            {
-                _logger.LogInformation("SinglePlayerDuty: not enabled");
-                return false;
-            }
-        }
 
         return false;
     }
