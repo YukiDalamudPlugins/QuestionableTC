@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Windowing;
@@ -117,8 +118,9 @@ internal sealed class DalamudInitializer : IDisposable
     internal static void SetupI18N(string language)
     {
         CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(language);
-        GlobalLocalizer.Localizer.LoadXML(typeof(DalamudInitializer).Assembly, "Resources.I18N.xml",
-            CultureInfo.CurrentUICulture);
+        using Stream stream = typeof(DalamudInitializer).Assembly.GetManifestResourceStream("Resources.I18N.xml")
+                              ?? throw new InvalidOperationException("Embedded resource 'Resources.I18N.xml' not found");
+        GlobalLocalizer.Localizer.LoadXML(stream, CultureInfo.CurrentUICulture);
     }
 
     public void Dispose()
