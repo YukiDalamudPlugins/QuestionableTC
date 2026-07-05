@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Globalization;
+using System.IO;
 using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
+using I18N.DotNet;
 using Microsoft.Extensions.Logging;
 using Questionable.Controller;
 using Questionable.Controller.GameUi;
@@ -59,6 +62,7 @@ internal sealed class DalamudInitializer : IDisposable
         _configuration = configuration;
         _partyWatchDog = partyWatchDog;
         _logger = logger;
+        SetupI18N(_configuration.General.Language);
 
         _windowSystem.AddWindow(oneTimeSetupWindow);
         _windowSystem.AddWindow(questWindow);
@@ -109,6 +113,19 @@ internal sealed class DalamudInitializer : IDisposable
             _questWindow.ToggleOrUncollapse();
         else
             _oneTimeSetupWindow.IsOpenAndUncollapsed = true;
+    }
+
+    internal static void SetupI18N(string language)
+    {
+        CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(language);
+        string xmlPath = Path.Combine(
+            new FileInfo(typeof(DalamudInitializer).Assembly.Location).DirectoryName ?? "",
+            "Resources", "I18N.xml");
+        if (File.Exists(xmlPath))
+            GlobalLocalizer.Localizer.LoadXML(xmlPath, CultureInfo.CurrentUICulture);
+        else
+            GlobalLocalizer.Localizer.LoadXML(typeof(DalamudInitializer).Assembly, "Resources.I18N.xml",
+                CultureInfo.CurrentUICulture);
     }
 
     public void Dispose()

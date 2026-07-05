@@ -7,6 +7,7 @@ using FFXIVClientStructs.FFXIV.Common.Math;
 using Questionable.Data;
 using Questionable.Functions;
 using Questionable.Model.Questing;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows.QuestComponents;
 
@@ -47,7 +48,7 @@ internal sealed class ARealmRebornComponent
     private void DrawPrimals()
     {
         bool complete = UIState.IsInstanceContentCompleted(RequiredPrimalInstances.Last());
-        bool hover = _uiUtils.ChecklistItem("Hard Mode Primals", complete,
+        bool hover = _uiUtils.ChecklistItem(_L("Hard Mode Primals"), complete,
             _configuration.Advanced.SkipARealmRebornHardModePrimals ? ImGuiColors.DalamudGrey : null);
         if (complete || !hover)
             return;
@@ -59,14 +60,14 @@ internal sealed class ARealmRebornComponent
         foreach (var instanceId in RequiredPrimalInstances)
         {
             (Vector4 color, FontAwesomeIcon icon) = UiUtils.GetInstanceStyle(instanceId);
-            _uiUtils.ChecklistItem(_territoryData.GetInstanceName(instanceId) ?? "?", color, icon);
+            _uiUtils.ChecklistItem(_territoryData.GetInstanceName(instanceId) ?? _L("?"), color, icon);
         }
     }
 
     private void DrawAllianceRaids()
     {
         bool complete = _questFunctions.IsQuestComplete(QuestData.CrystalTowerQuests[^1]);
-        bool hover = _uiUtils.ChecklistItem("Crystal Tower Raids", complete,
+        bool hover = _uiUtils.ChecklistItem(_L("Crystal Tower Raids"), complete,
             _configuration.Advanced.SkipCrystalTowerRaids ? ImGuiColors.DalamudGrey : null);
         if (complete || !hover)
             return;

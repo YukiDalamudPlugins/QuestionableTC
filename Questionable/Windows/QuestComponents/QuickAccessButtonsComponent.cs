@@ -14,6 +14,7 @@ using ImGuiNET;
 using Questionable.Controller;
 using Questionable.External;
 using Questionable.Functions;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows.QuestComponents;
 
@@ -66,7 +67,7 @@ internal sealed class QuickAccessButtonsComponent
                                             map->FlagMapMarker.TerritoryId != _clientState.TerritoryType ||
                                             !_navmeshIpc.IsReady))
         {
-            if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Flag, "To Flag"))
+            if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Flag, _L("To Flag")))
             {
                 _movementController.Destination = null;
                 _chatFunctions.ExecuteCommand(
@@ -79,22 +80,22 @@ internal sealed class QuickAccessButtonsComponent
             ImGui.SameLine();
             using (var unused = ImRaii.Disabled(!ImGui.IsKeyDown(ImGuiKey.ModCtrl)))
             {
-                if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.GlobeEurope, "Rebuild Navmesh"))
+                if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.GlobeEurope, _L("Rebuild Navmesh")))
                     _commandManager.ProcessCommand("/vnav rebuild");
             }
 
             if (ImGui.IsItemHovered(ImGuiHoveredFlags.AllowWhenDisabled))
-                ImGui.SetTooltip("Hold CTRL to enable this button.\nRebuilding the navmesh will take some time.");
+                ImGui.SetTooltip(_L("Hold CTRL to enable this button.\nRebuilding the navmesh will take some time."));
         }
 
-        if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.RedoAlt, "Reload Data"))
+        if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.RedoAlt, _L("Reload Data")))
             Reload?.Invoke(this, EventArgs.Empty);
 
         ImGui.SameLine();
         if (ImGuiComponents.IconButton(FontAwesomeIcon.BookBookmark))
             _journalProgressWindow.IsOpenAndUncollapsed = true;
         if (ImGui.IsItemHovered())
-            ImGui.SetTooltip("Journal Progress");
+            ImGui.SetTooltip(_L("Journal Progress"));
 
 
         if (_questRegistry.ValidationIssueCount > 0)

@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows.JournalComponents;
 
@@ -51,17 +52,17 @@ internal sealed class QuestJournalComponent
 
     public void DrawQuests()
     {
-        using var tab = ImRaii.TabItem("Quests");
+        using var tab = ImRaii.TabItem(_L("Quests"));
         if (!tab)
             return;
 
-        if (ImGui.CollapsingHeader("Explanation", ImGuiTreeNodeFlags.DefaultOpen))
+        if (ImGui.CollapsingHeader(_L("Explanation"), ImGuiTreeNodeFlags.DefaultOpen))
         {
-            ImGui.Text("The list below contains all quests that appear in your journal.");
-            ImGui.BulletText("'Supported' lists quests that Questionable can do for you");
-            ImGui.BulletText("'Completed' lists quests your current character has completed.");
+            ImGui.Text(_L("The list below contains all quests that appear in your journal."));
+            ImGui.BulletText(_L("'Supported' lists quests that Questionable can do for you"));
+            ImGui.BulletText(_L("'Completed' lists quests your current character has completed."));
             ImGui.BulletText(
-                "Not all quests can be completed even if they're listed as available, e.g. starting city quest chains.");
+                _L("Not all quests can be completed even if they're listed as available, e.g. starting city quest chains."));
 
             ImGui.Spacing();
             ImGui.Separator();
@@ -72,7 +73,7 @@ internal sealed class QuestJournalComponent
 
         ImGui.SameLine();
         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-        if (ImGui.InputTextWithHint(string.Empty, "Search quests and categories", ref Filter.SearchText, 256))
+        if (ImGui.InputTextWithHint(string.Empty, _L("Search quests and categories"), ref Filter.SearchText, 256))
             UpdateFilter();
 
         if (_filteredSections.Count > 0)
@@ -81,16 +82,16 @@ internal sealed class QuestJournalComponent
             if (!table)
                 return;
 
-            ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.NoHide);
-            ImGui.TableSetupColumn("Supported", ImGuiTableColumnFlags.WidthFixed, 120 * ImGui.GetIO().FontGlobalScale);
-            ImGui.TableSetupColumn("Completed", ImGuiTableColumnFlags.WidthFixed, 120 * ImGui.GetIO().FontGlobalScale);
+            ImGui.TableSetupColumn(_L("Name"), ImGuiTableColumnFlags.NoHide);
+            ImGui.TableSetupColumn(_L("Supported"), ImGuiTableColumnFlags.WidthFixed, 120 * ImGui.GetIO().FontGlobalScale);
+            ImGui.TableSetupColumn(_L("Completed"), ImGuiTableColumnFlags.WidthFixed, 120 * ImGui.GetIO().FontGlobalScale);
             ImGui.TableHeadersRow();
 
             foreach (var section in _filteredSections)
                 DrawSection(section);
         }
         else
-            ImGui.Text("No quest or category matches your search.");
+            ImGui.Text(_L("No quest or category matches your search."));
     }
 
     private void DrawSection(FilteredSection filter)

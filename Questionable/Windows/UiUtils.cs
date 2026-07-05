@@ -6,6 +6,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using ImGuiNET;
 using Questionable.Functions;
 using Questionable.Model.Questing;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows;
 
@@ -23,24 +24,24 @@ internal sealed class UiUtils
     public (Vector4 Color, FontAwesomeIcon Icon, string Status) GetQuestStyle(ElementId elementId)
     {
         if (_questFunctions.IsQuestAccepted(elementId))
-            return (ImGuiColors.DalamudYellow, FontAwesomeIcon.PersonWalkingArrowRight, "Active");
+            return (ImGuiColors.DalamudYellow, FontAwesomeIcon.PersonWalkingArrowRight, _L("Active"));
         else if (elementId is QuestId questId && _questFunctions.IsDailyAlliedSocietyQuestAndAvailableToday(questId))
         {
             if (!_questFunctions.IsReadyToAcceptQuest(questId))
-                return (ImGuiColors.ParsedGreen, FontAwesomeIcon.Check, "Complete");
+                return (ImGuiColors.ParsedGreen, FontAwesomeIcon.Check, _L("Complete"));
             else if (_questFunctions.IsQuestComplete(questId))
-                return (ImGuiColors.ParsedBlue, FontAwesomeIcon.Running, "Available (Complete)");
+                return (ImGuiColors.ParsedBlue, FontAwesomeIcon.Running, _L("Available (Complete)"));
             else
-                return (ImGuiColors.DalamudYellow, FontAwesomeIcon.Running, "Available");
+                return (ImGuiColors.DalamudYellow, FontAwesomeIcon.Running, _L("Available"));
         }
         else if (_questFunctions.IsQuestAcceptedOrComplete(elementId))
-            return (ImGuiColors.ParsedGreen, FontAwesomeIcon.Check, "Complete");
+            return (ImGuiColors.ParsedGreen, FontAwesomeIcon.Check, _L("Complete"));
         else if (_questFunctions.IsQuestUnobtainable(elementId))
-            return (ImGuiColors.DalamudGrey, FontAwesomeIcon.Minus, "Unobtainable");
+            return (ImGuiColors.DalamudGrey, FontAwesomeIcon.Minus, _L("Unobtainable"));
         else if (_questFunctions.IsQuestLocked(elementId))
-            return (ImGuiColors.DalamudRed, FontAwesomeIcon.Times, "Locked");
+            return (ImGuiColors.DalamudRed, FontAwesomeIcon.Times, _L("Locked"));
         else
-            return (ImGuiColors.DalamudYellow, FontAwesomeIcon.Running, "Available");
+            return (ImGuiColors.DalamudYellow, FontAwesomeIcon.Running, _L("Available"));
     }
 
     public static (Vector4 color, FontAwesomeIcon icon) GetInstanceStyle(ushort instanceId)

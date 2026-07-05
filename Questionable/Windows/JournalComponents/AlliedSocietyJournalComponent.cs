@@ -9,6 +9,7 @@ using Questionable.Data;
 using Questionable.Functions;
 using Questionable.Model;
 using Questionable.Windows.QuestComponents;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows.JournalComponents;
 
@@ -51,7 +52,7 @@ internal sealed class AlliedSocietyJournalComponent
 
     public void DrawAlliedSocietyQuests()
     {
-        using var tab = ImRaii.TabItem("Allied Societies");
+        using var tab = ImRaii.TabItem(_L("Allied Societies"));
         if (!tab)
             return;
 
@@ -93,7 +94,7 @@ internal sealed class AlliedSocietyJournalComponent
                     if (questsByRank.Count == 0)
                         continue;
 
-                    ImGui.Text(RankNames[i - 1]);
+                    ImGui.Text(_L(RankNames[i - 1]));
                     foreach (var quest in questsByRank)
                         DrawQuest(quest);
                 }

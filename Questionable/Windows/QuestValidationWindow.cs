@@ -8,6 +8,7 @@ using ImGuiNET;
 using LLib.ImGui;
 using Questionable.Data;
 using Questionable.Validation;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows;
 
@@ -19,7 +20,7 @@ internal sealed class QuestValidationWindow : LWindow
 
     public QuestValidationWindow(QuestValidator questValidator, QuestData questData,
         IDalamudPluginInterface pluginInterface)
-        : base("Quest Validation###QuestionableValidator")
+        : base(_L("Quest Validation") + "###QuestionableValidator")
     {
         _questValidator = questValidator;
         _questData = questData;
@@ -42,11 +43,11 @@ internal sealed class QuestValidationWindow : LWindow
             return;
         }
 
-        ImGui.TableSetupColumn("Quest", ImGuiTableColumnFlags.WidthFixed, 50);
+        ImGui.TableSetupColumn(_L("Quest"), ImGuiTableColumnFlags.WidthFixed, 50);
         ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed, 200);
-        ImGui.TableSetupColumn("Seq", ImGuiTableColumnFlags.WidthFixed, 30);
-        ImGui.TableSetupColumn("Step", ImGuiTableColumnFlags.WidthFixed, 30);
-        ImGui.TableSetupColumn("Issue", ImGuiTableColumnFlags.None, 200);
+        ImGui.TableSetupColumn(_L("Seq"), ImGuiTableColumnFlags.WidthFixed, 30);
+        ImGui.TableSetupColumn(_L("Step"), ImGuiTableColumnFlags.WidthFixed, 30);
+        ImGui.TableSetupColumn(_L("Issue"), ImGuiTableColumnFlags.None, 200);
         ImGui.TableHeadersRow();
 
         foreach (ValidationIssue validationIssue in _questValidator.Issues)

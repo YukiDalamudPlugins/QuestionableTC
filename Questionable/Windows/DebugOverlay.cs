@@ -10,6 +10,7 @@ using ImGuiNET;
 using Questionable.Controller;
 using Questionable.Data;
 using Questionable.Model.Questing;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows;
 
@@ -28,7 +29,7 @@ internal sealed class DebugOverlay : Window
     public DebugOverlay(QuestController questController, QuestRegistry questRegistry, IGameGui gameGui,
         IClientState clientState, ICondition condition, AetheryteData aetheryteData, IObjectTable objectTable,
         CombatController combatController, Configuration configuration)
-        : base("Questionable Debug Overlay###QuestionableDebugOverlay",
+        : base(_L("Questionable Debug Overlay") + "###QuestionableDebugOverlay",
             ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoBackground |
             ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoSavedSettings, true)
     {

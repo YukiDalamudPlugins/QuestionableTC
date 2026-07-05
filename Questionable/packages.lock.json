@@ -23,6 +23,12 @@
         "resolved": "1.2.25",
         "contentHash": "xCXiw7BCxHJ8pF6wPepRUddlh2dlQlbr81gXA72hdk4FLHkKXas7EH/n+fk5UCA/YfMqG1Z6XaPiUjDbUNBUzg=="
       },
+      "I18N.DotNet": {
+        "type": "Direct",
+        "requested": "[1.3.1, )",
+        "resolved": "1.3.1",
+        "contentHash": "b9uFO1ALnFNECyTTJZxHjzQjThtsL8Z8P7YLyo5QFM5FWmjpHK1vPPcUYdPBCgwlBn/Ffszefq7fIsjQMIqQLg=="
+      },
       "JetBrains.Annotations": {
         "type": "Direct",
         "requested": "[2024.3.0, )",
@@ -132,7 +138,7 @@
       "gatheringpaths": {
         "type": "Project",
         "dependencies": {
-          "Questionable.Model": "[5.11.0, )"
+          "Questionable.Model": "[5.23.0, )"
         }
       },
       "llib": {
@@ -154,7 +160,7 @@
       "questpaths": {
         "type": "Project",
         "dependencies": {
-          "Questionable.Model": "[5.11.0, )"
+          "Questionable.Model": "[5.23.0, )"
         }
       }
     }

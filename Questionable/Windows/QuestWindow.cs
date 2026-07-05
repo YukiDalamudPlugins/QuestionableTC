@@ -10,6 +10,7 @@ using Questionable.Controller;
 using Questionable.Controller.GameUi;
 using Questionable.Data;
 using Questionable.Windows.QuestComponents;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows;
 
@@ -97,7 +98,7 @@ internal sealed class QuestWindow : LWindow, IPersistableWindowConfig
             ShowTooltip = () =>
             {
                 ImGui.BeginTooltip();
-                ImGui.Text("Open Configuration");
+                ImGui.Text(_L("Open Configuration"));
                 ImGui.EndTooltip();
             }
         });

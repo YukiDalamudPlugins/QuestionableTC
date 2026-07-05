@@ -20,6 +20,7 @@ using Questionable.Functions;
 using Questionable.Model;
 using Questionable.Model.Questing;
 using Questionable.Windows.QuestComponents;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows;
 
@@ -54,7 +55,7 @@ internal sealed class QuestSelectionWindow : LWindow
         IClientState clientState,
         UiUtils uiUtils,
         QuestTooltipComponent questTooltipComponent)
-        : base($"Quest Selection{WindowId}")
+        : base(_L("Quest Selection") + WindowId)
     {
         _questData = questData;
         _gameGui = gameGui;
@@ -82,7 +83,7 @@ internal sealed class QuestSelectionWindow : LWindow
         {
             var targetId = gameObject.DataId;
             var targetName = gameObject.Name.ToString();
-            WindowName = $"Quests starting with {targetName} [{targetId}]{WindowId}";
+            WindowName = _LF("Quests starting with {0}", targetName) + $" [{targetId}]{WindowId}";
 
             _quests = _questData.GetAllByIssuerDataId(targetId);
             if (_gameGui.TryGetAddonByName<AddonSelectIconString>("SelectIconString", out var addonSelectIconString))
@@ -108,7 +109,7 @@ internal sealed class QuestSelectionWindow : LWindow
     {
         var territoryId = _clientState.TerritoryType;
         var territoryName = _territoryData.GetNameAndId(territoryId);
-        WindowName = $"Quests starting in {territoryName}{WindowId}";
+        WindowName = _LF("Quests starting in {0}", territoryName) + WindowId;
 
         _quests = _questRegistry.AllQuests
             .Where(x => x.FindSequence(0)?.FindStep(0)?.TerritoryId == territoryId)
@@ -135,7 +136,7 @@ internal sealed class QuestSelectionWindow : LWindow
     public override void DrawContent()
     {
         if (_offeredQuests.Count != 0)
-            ImGui.Checkbox("Only show quests currently offered", ref _onlyAvailableQuests);
+            ImGui.Checkbox(_L("Only show quests currently offered"), ref _onlyAvailableQuests);
 
         using var table = ImRaii.Table("QuestSelection", 4, ImGuiTableFlags.Borders | ImGuiTableFlags.ScrollY);
         if (!table)
@@ -158,10 +159,10 @@ internal sealed class QuestSelectionWindow : LWindow
                              2 * ImGui.GetStyle().ItemSpacing.X;
         ImGui.PopFont();
 
-        ImGui.TableSetupColumn("Id", ImGuiTableColumnFlags.WidthFixed, 50 * ImGui.GetIO().FontGlobalScale);
+        ImGui.TableSetupColumn(_L("Id"), ImGuiTableColumnFlags.WidthFixed, 50 * ImGui.GetIO().FontGlobalScale);
         ImGui.TableSetupColumn("", ImGuiTableColumnFlags.WidthFixed, statusIconSize);
-        ImGui.TableSetupColumn("Name", ImGuiTableColumnFlags.None, 200);
-        ImGui.TableSetupColumn("Actions", ImGuiTableColumnFlags.WidthFixed, actionIconSize);
+        ImGui.TableSetupColumn(_L("Name"), ImGuiTableColumnFlags.None, 200);
+        ImGui.TableSetupColumn(_L("Actions"), ImGuiTableColumnFlags.WidthFixed, actionIconSize);
         ImGui.TableHeadersRow();
 
         foreach (IQuestInfo quest in (_offeredQuests.Count != 0 && _onlyAvailableQuests) ? _offeredQuests : _quests)
@@ -213,7 +214,7 @@ internal sealed class QuestSelectionWindow : LWindow
 
                 bool copy = ImGuiComponents.IconButton(FontAwesomeIcon.Copy);
                 if (ImGui.IsItemHovered())
-                    ImGui.SetTooltip("Copy as file name");
+                    ImGui.SetTooltip(_L("Copy as file name"));
                 if (copy)
                     CopyToClipboard(quest, true);
                 else if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
@@ -229,7 +230,7 @@ internal sealed class QuestSelectionWindow : LWindow
 
                     bool startNextQuest = ImGuiComponents.IconButton(FontAwesomeIcon.Play);
                     if (ImGui.IsItemHovered())
-                        ImGui.SetTooltip("Start as next quest");
+                        ImGui.SetTooltip(_L("Start as next quest"));
                     if (startNextQuest)
                     {
                         _questController.SetNextQuest(knownQuest);
@@ -240,7 +241,7 @@ internal sealed class QuestSelectionWindow : LWindow
 
                     bool setNextQuest = ImGuiComponents.IconButton(FontAwesomeIcon.AngleDoubleRight);
                     if (ImGui.IsItemHovered())
-                        ImGui.SetTooltip("Set as next quest");
+                        ImGui.SetTooltip(_L("Set as next quest"));
                     if (setNextQuest)
                         _questController.SetNextQuest(knownQuest);
 
@@ -254,6 +255,6 @@ internal sealed class QuestSelectionWindow : LWindow
     {
         string fileName = $"{quest.QuestId}_{quest.SimplifiedName}{(suffix ? ".json" : "")}";
         ImGui.SetClipboardText(fileName);
-        _chatGui.Print($"Copied '{fileName}' to clipboard");
+        _chatGui.Print(_LF("Copied '{0}' to clipboard", fileName));
     }
 }

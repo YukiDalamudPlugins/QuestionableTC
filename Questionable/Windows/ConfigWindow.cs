@@ -3,6 +3,7 @@ using Dalamud.Plugin;
 using ImGuiNET;
 using LLib.ImGui;
 using Questionable.Windows.ConfigComponents;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows;
 
@@ -26,7 +27,7 @@ internal sealed class ConfigWindow : LWindow, IPersistableWindowConfig
         NotificationConfigComponent notificationConfigComponent,
         DebugConfigComponent debugConfigComponent,
         Configuration configuration)
-        : base("Config - Questionable###QuestionableConfig", ImGuiWindowFlags.AlwaysAutoResize)
+        : base(_L("Config - Questionable") + "###QuestionableConfig", ImGuiWindowFlags.AlwaysAutoResize)
     {
         _pluginInterface = pluginInterface;
         _generalConfigComponent = generalConfigComponent;

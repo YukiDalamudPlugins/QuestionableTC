@@ -12,6 +12,7 @@ using Dalamud.Utility;
 using ImGuiNET;
 using Questionable.Controller;
 using Questionable.External;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows.ConfigComponents;
 
@@ -21,25 +22,25 @@ internal sealed class PluginConfigComponent : ConfigComponent
     [
         new("vnavmesh",
             "vnavmesh",
-            """
+            _L("""
             vnavmesh handles the navigation within a zone, moving
             your character to the next quest-related objective.
-            """,
+            """),
             new Uri("https://github.com/awgil/ffxiv_navmesh/"),
             new Uri("https://puni.sh/api/repository/veyn")),
         new("Lifestream",
             "Lifestream",
-            """
+            _L("""
             Used to travel to aethernet shards in cities.
-            """,
+            """),
             new Uri("https://github.com/NightmareXIV/Lifestream"),
             new Uri("https://github.com/NightmareXIV/MyDalamudPlugins/raw/main/pluginmaster.json")),
         new("TextAdvance",
             "TextAdvance",
-            """
+            _L("""
             Automatically accepts and turns in quests, skips cutscenes
             and dialogue.
-            """,
+            """),
             new Uri("https://github.com/NightmareXIV/TextAdvance"),
             new Uri("https://github.com/NightmareXIV/MyDalamudPlugins/raw/main/pluginmaster.json")),
     ];
@@ -101,39 +102,39 @@ internal sealed class PluginConfigComponent : ConfigComponent
         [
             new PluginInfo("CBT (formerly known as Automaton)",
                 "Automaton",
-                """
+                _L("""
                 Automaton is a collection of automation-related tweaks.
-                """,
+                """),
                 new Uri("https://github.com/Jaksuhn/Automaton"),
                 new Uri("https://puni.sh/api/repository/croizat"),
                 "/cbt",
                 [
-                    new PluginDetailInfo("'Sniper no sniping' enabled",
-                        "Automatically completes sniping tasks introduced in Stormblood",
+                    new PluginDetailInfo(_L("'Sniper no sniping' enabled"),
+                        _L("Automatically completes sniping tasks introduced in Stormblood"),
                         () => automatonIpc.IsAutoSnipeEnabled)
                 ]),
             new PluginInfo("Pandora's Box",
                 "PandorasBox",
-                """
+                _L("""
                 Pandora's Box is a collection of tweaks.
-                """,
+                """),
                 new Uri("https://github.com/PunishXIV/PandorasBox"),
                 new Uri("https://puni.sh/api/plugins"),
                 "/pandora",
                 [
-                    new PluginDetailInfo("'Auto Active Time Maneuver' enabled",
-                        """
+                    new PluginDetailInfo(_L("'Auto Active Time Maneuver' enabled"),
+                        _L("""
                         Automatically completes active time maneuvers in
                         single player instances, trials and raids"
-                        """,
+                        """),
                         () => pandorasBoxIpc.IsAutoActiveTimeManeuverEnabled)
                 ]),
             new("NotificationMaster",
                 "NotificationMaster",
-                """
+                _L("""
                 Sends a configurable out-of-game notification if a quest
                 requires manual actions.
-                """,
+                """),
                 new Uri("https://github.com/NightmareXIV/NotificationMaster"),
                 null),
         ];
@@ -141,7 +142,7 @@ internal sealed class PluginConfigComponent : ConfigComponent
 
     public override void DrawTab()
     {
-        using var tab = ImRaii.TabItem("Dependencies###Plugins");
+        using var tab = ImRaii.TabItem(_L("Dependencies") + "###Plugins");
         if (!tab)
             return;
 
@@ -152,10 +153,10 @@ internal sealed class PluginConfigComponent : ConfigComponent
         ImGui.Spacing();
 
         if (allRequiredInstalled)
-            ImGui.TextColored(ImGuiColors.ParsedGreen, "All required plugins are installed.");
+            ImGui.TextColored(ImGuiColors.ParsedGreen, _L("All required plugins are installed."));
         else
             ImGui.TextColored(ImGuiColors.DalamudRed,
-                "Required plugins are missing, Questionable will not work properly.");
+                _L("Required plugins are missing, Questionable will not work properly."));
     }
 
     public void Draw(out bool allRequiredInstalled)
@@ -167,7 +168,7 @@ internal sealed class PluginConfigComponent : ConfigComponent
                                ImGui.GetStyle().ItemSpacing.X;
         }
 
-        ImGui.Text("Questionable requires the following plugins to work:");
+        ImGui.Text(_L("Questionable requires the following plugins to work:"));
         allRequiredInstalled = true;
         using (ImRaii.PushIndent())
         {
@@ -179,13 +180,13 @@ internal sealed class PluginConfigComponent : ConfigComponent
         ImGui.Separator();
         ImGui.Spacing();
 
-        ImGui.Text("Questionable supports multiple rotation/combat plugins, please pick the one\nyou want to use:");
+        ImGui.Text(_L("Questionable supports multiple rotation/combat plugins, please pick the one\nyou want to use:"));
 
         using (ImRaii.PushIndent())
         {
             using (ImRaii.Disabled(_combatController.IsRunning))
             {
-                if (ImGui.RadioButton("No rotation/combat plugin (combat must be done manually)",
+                if (ImGui.RadioButton(_L("No rotation/combat plugin (combat must be done manually)"),
                         _configuration.General.CombatModule == Configuration.ECombatModule.None))
                 {
                     _configuration.General.CombatModule = Configuration.ECombatModule.None;
@@ -203,7 +204,7 @@ internal sealed class PluginConfigComponent : ConfigComponent
         ImGui.Separator();
         ImGui.Spacing();
 
-        ImGui.Text("The following plugins are recommended, but not required:");
+        ImGui.Text(_L("The following plugins are recommended, but not required:"));
         using (ImRaii.PushIndent())
         {
             foreach (var plugin in _recommendedPlugins)
@@ -294,25 +295,25 @@ internal sealed class PluginConfigComponent : ConfigComponent
             {
                 if (!allDetailsOk && plugin.ConfigCommand != null && plugin.ConfigCommand.StartsWith('/'))
                 {
-                    if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Cog, "Open configuration"))
+                    if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Cog, _L("Open configuration")))
                         _commandManager.ProcessCommand(plugin.ConfigCommand);
                 }
             }
             else
             {
-                if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Globe, "Open Website"))
+                if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Globe, _L("Open Website")))
                     Util.OpenLink(plugin.WebsiteUri.ToString());
 
                 ImGui.SameLine();
                 if (plugin.DalamudRepositoryUri != null)
                 {
-                    if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Code, "Open Repository"))
+                    if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Code, _L("Open Repository")))
                         Util.OpenLink(plugin.DalamudRepositoryUri.ToString());
                 }
                 else
                 {
                     ImGui.AlignTextToFramePadding();
-                    ImGuiComponents.HelpMarker("Available on official Dalamud Repository");
+                    ImGuiComponents.HelpMarker(_L("Available on official Dalamud Repository"));
                 }
             }
         }

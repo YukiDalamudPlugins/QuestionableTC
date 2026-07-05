@@ -10,6 +10,7 @@ using LLib.GameData;
 using Lumina.Excel.Sheets;
 using Questionable.Controller;
 using Questionable.Data;
+using static Questionable.Utils.LocalizeShortcut;
 using GrandCompany = FFXIVClientStructs.FFXIV.Client.UI.Agent.GrandCompany;
 
 namespace Questionable.Windows.ConfigComponents;
@@ -64,16 +65,36 @@ internal sealed class GeneralConfigComponent : ConfigComponent
         _classJobNames = DefaultClassJobs.Select(x => x.Name).Concat(classJobs.Select(x => x.ToFriendlyString())).ToArray();
     }
 
+    private static readonly string[] LanguageCodes = ["en", "ja-jp", "zh-cn", "zh-tw"];
+
     public override void DrawTab()
     {
-        using var tab = ImRaii.TabItem("General###General");
+        using var tab = ImRaii.TabItem(_L("General") + "###General");
         if (!tab)
             return;
 
+        string[] languageNames =
+        [
+            _L("English"),
+            _L("Japanese"),
+            _L("Chinese (Simplified)"),
+            _L("Chinese (Traditional)"),
+        ];
+        int selectedLanguage = Array.IndexOf(LanguageCodes, Configuration.General.Language);
+        if (selectedLanguage == -1)
+            selectedLanguage = 0;
+        if (ImGui.Combo(_L("Language"), ref selectedLanguage, languageNames, languageNames.Length))
+        {
+            string was = Configuration.General.Language;
+            Configuration.General.Language = LanguageCodes[selectedLanguage];
+            Save();
+            if (was != Configuration.General.Language)
+                DalamudInitializer.SetupI18N(Configuration.General.Language);
+        }
 
         {
             int selectedCombatModule = (int)Configuration.General.CombatModule;
-            if (ImGui.Combo("Preferred Combat Module", ref selectedCombatModule, _combatModuleNames,
+            if (ImGui.Combo(_L("Preferred Combat Module"), ref selectedCombatModule, _combatModuleNames,
                     _combatModuleNames.Length))
             {
                 Configuration.General.CombatModule = (Configuration.ECombatModule)selectedCombatModule;
@@ -89,14 +110,14 @@ internal sealed class GeneralConfigComponent : ConfigComponent
             Save();
         }
 
-        if (ImGui.Combo("Preferred Mount", ref selectedMount, _mountNames, _mountNames.Length))
+        if (ImGui.Combo(_L("Preferred Mount"), ref selectedMount, _mountNames, _mountNames.Length))
         {
             Configuration.General.MountId = _mountIds[selectedMount];
             Save();
         }
 
         int grandCompany = (int)Configuration.General.GrandCompany;
-        if (ImGui.Combo("Preferred Grand Company", ref grandCompany, _grandCompanyNames,
+        if (ImGui.Combo(_L("Preferred Grand Company"), ref grandCompany, _grandCompanyNames,
                 _grandCompanyNames.Length))
         {
             Configuration.General.GrandCompany = (GrandCompany)grandCompany;
@@ -112,32 +133,32 @@ internal sealed class GeneralConfigComponent : ConfigComponent
             combatJob = 0;
         }
 
-        if (ImGui.Combo("Preferred Combat Job", ref combatJob, _classJobNames, _classJobNames.Length))
+        if (ImGui.Combo(_L("Preferred Combat Job"), ref combatJob, _classJobNames, _classJobNames.Length))
         {
             Configuration.General.CombatJob = _classJobIds[combatJob];
             Save();
         }
 
         ImGui.Separator();
-        ImGui.Text("UI");
+        ImGui.Text(_L("UI"));
         using (ImRaii.PushIndent())
         {
             bool hideInAllInstances = Configuration.General.HideInAllInstances;
-            if (ImGui.Checkbox("Hide quest window in all instanced duties", ref hideInAllInstances))
+            if (ImGui.Checkbox(_L("Hide quest window in all instanced duties"), ref hideInAllInstances))
             {
                 Configuration.General.HideInAllInstances = hideInAllInstances;
                 Save();
             }
 
             bool useEscToCancelQuesting = Configuration.General.UseEscToCancelQuesting;
-            if (ImGui.Checkbox("Use ESC to cancel questing/movement", ref useEscToCancelQuesting))
+            if (ImGui.Checkbox(_L("Use ESC to cancel questing/movement"), ref useEscToCancelQuesting))
             {
                 Configuration.General.UseEscToCancelQuesting = useEscToCancelQuesting;
                 Save();
             }
 
             bool showIncompleteSeasonalEvents = Configuration.General.ShowIncompleteSeasonalEvents;
-            if (ImGui.Checkbox("Show details for incomplete seasonal events", ref showIncompleteSeasonalEvents))
+            if (ImGui.Checkbox(_L("Show details for incomplete seasonal events"), ref showIncompleteSeasonalEvents))
             {
                 Configuration.General.ShowIncompleteSeasonalEvents = showIncompleteSeasonalEvents;
                 Save();
@@ -145,11 +166,11 @@ internal sealed class GeneralConfigComponent : ConfigComponent
         }
 
         ImGui.Separator();
-        ImGui.Text("Questing");
+        ImGui.Text(_L("Questing"));
         using (ImRaii.PushIndent())
         {
             bool configureTextAdvance = Configuration.General.ConfigureTextAdvance;
-            if (ImGui.Checkbox("Automatically configure TextAdvance with the recommended settings",
+            if (ImGui.Checkbox(_L("Automatically configure TextAdvance with the recommended settings"),
                     ref configureTextAdvance))
             {
                 Configuration.General.ConfigureTextAdvance = configureTextAdvance;
@@ -157,7 +178,7 @@ internal sealed class GeneralConfigComponent : ConfigComponent
             }
 
             bool skipLowPriorityInstances = Configuration.General.SkipLowPriorityDuties;
-            if (ImGui.Checkbox("Unlock certain optional dungeons and raids (instead of waiting for completion)", ref skipLowPriorityInstances))
+            if (ImGui.Checkbox(_L("Unlock certain optional dungeons and raids (instead of waiting for completion)"), ref skipLowPriorityInstances))
             {
                 Configuration.General.SkipLowPriorityDuties = skipLowPriorityInstances;
                 Save();
@@ -173,11 +194,11 @@ internal sealed class GeneralConfigComponent : ConfigComponent
             {
                 using (ImRaii.Tooltip())
                 {
-                    ImGui.Text("Questionable automatically picks up some optional quests (e.g. for aether currents, or the ARR alliance raids).");
-                    ImGui.Text("If this setting is enabled, Questionable will continue with other quests, instead of waiting for manual completion of the duty.");
+                    ImGui.Text(_L("Questionable automatically picks up some optional quests (e.g. for aether currents, or the ARR alliance raids)."));
+                    ImGui.Text(_L("If this setting is enabled, Questionable will continue with other quests, instead of waiting for manual completion of the duty."));
 
                     ImGui.Separator();
-                    ImGui.Text("This affects the following dungeons and raids:");
+                    ImGui.Text(_L("This affects the following dungeons and raids:"));
                     foreach (var lowPriorityCfc in _questRegistry.LowPriorityContentFinderConditionQuests)
                     {
                         if (_territoryData.TryGetContentFinderCondition(lowPriorityCfc.ContentFinderConditionId, out var cfcData))

@@ -37,6 +37,7 @@ internal sealed class Configuration : IPluginConfiguration
         public bool ShowIncompleteSeasonalEvents { get; set; } = true;
         public bool SkipLowPriorityDuties { get; set; }
         public bool ConfigureTextAdvance { get; set; } = true;
+        public string Language { get; set; } = "en";
     }
 
     internal sealed class DutyConfiguration

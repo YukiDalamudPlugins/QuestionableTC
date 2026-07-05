@@ -20,6 +20,7 @@ using Questionable.Functions;
 using Questionable.Model;
 using Questionable.Model.Common;
 using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows.QuestComponents;
 
@@ -91,7 +92,7 @@ internal sealed class CreationUtilsComponent
         if (_configuration.Advanced.AdditionalStatusInformation)
         {
             var q = _questFunctions.GetCurrentQuest();
-            ImGui.Text($"Current Quest: {q.CurrentQuest} → {q.Sequence}");
+            ImGui.Text(_LF("Current Quest: {0} → {1}", q.CurrentQuest, q.Sequence));
         }
 
 #if false
@@ -188,7 +189,7 @@ internal sealed class CreationUtilsComponent
         if (hoveredItemId != 0)
         {
             ImGui.Separator();
-            ImGui.Text($"Hovered Item: {hoveredItemId}");
+            ImGui.Text(_LF("Hovered Item: {0}", hoveredItemId));
         }
     }
 
@@ -199,17 +200,17 @@ internal sealed class CreationUtilsComponent
             nameId = $"; n={character.NameId}";
 
         ImGui.Separator();
-        ImGui.Text(string.Create(CultureInfo.InvariantCulture,
-            $"Target: {target.Name}  ({target.ObjectKind}; {target.DataId}{nameId})"));
+        ImGui.Text(_LF("Target: {0}  ({1}; {2}{3})",
+            target.Name, target.ObjectKind, target.DataId, nameId));
 
         if (_clientState.LocalPlayer != null)
         {
-            ImGui.Text(string.Create(CultureInfo.InvariantCulture,
-                $"Distance: {(target.Position - _clientState.LocalPlayer.Position).Length():F2}"));
+            ImGui.Text(_LF("Distance: {0:F2}",
+                (target.Position - _clientState.LocalPlayer.Position).Length()));
             ImGui.SameLine();
 
             float verticalDistance = target.Position.Y - _clientState.LocalPlayer.Position.Y;
-            string verticalDistanceText = string.Create(CultureInfo.InvariantCulture, $"Y: {verticalDistance:F2}");
+            string verticalDistanceText = _LF("Y: {0:F2}", verticalDistance);
             if (Math.Abs(verticalDistance) >= MovementController.DefaultVerticalInteractionDistance)
                 ImGui.TextColored(ImGuiColors.DalamudOrange, verticalDistanceText);
             else
@@ -227,7 +228,7 @@ internal sealed class CreationUtilsComponent
         ImGui.BeginDisabled(!_movementController.IsNavmeshReady || _gameFunctions.IsOccupied());
         if (!_movementController.IsPathfinding)
         {
-            if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Bullseye, "To Target"))
+            if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Bullseye, _L("To Target")))
             {
                 _movementController.NavigateTo(EMovementType.DebugWindow, target.DataId,
                     target.Position,
@@ -237,7 +238,7 @@ internal sealed class CreationUtilsComponent
         }
         else
         {
-            if (ImGui.Button("Cancel pathfinding"))
+            if (ImGui.Button(_L("Cancel pathfinding")))
                 _movementController.ResetPathfinding();
         }
 
@@ -247,7 +248,7 @@ internal sealed class CreationUtilsComponent
         ImGui.BeginDisabled(!_questData.IsIssuerOfAnyQuest(target.DataId));
         bool showQuests = ImGuiComponents.IconButton(FontAwesomeIcon.MapMarkerAlt);
         if (ImGui.IsItemHovered())
-            ImGui.SetTooltip("Show all Quests starting with your current target.");
+            ImGui.SetTooltip(_L("Show all Quests starting with your current target."));
         if (showQuests)
             _questSelectionWindow.OpenForTarget(_targetManager.Target);
 
@@ -257,7 +258,7 @@ internal sealed class CreationUtilsComponent
         ImGui.SameLine();
         bool interact = ImGuiComponents.IconButton(FontAwesomeIcon.MousePointer);
         if (ImGui.IsItemHovered())
-            ImGui.SetTooltip("Interact with your current target.");
+            ImGui.SetTooltip(_L("Interact with your current target."));
         if (interact)
         {
             ulong result = TargetSystem.Instance()->InteractWithObject(
@@ -274,7 +275,7 @@ internal sealed class CreationUtilsComponent
         bool copy = ImGuiComponents.IconButton(FontAwesomeIcon.Copy);
         if (ImGui.IsItemHovered())
             ImGui.SetTooltip(
-                "Left click: Copy target position as JSON.\nRight click: Copy target position as C# code.");
+                _L("Left click: Copy target position as JSON.\nRight click: Copy target position as C# code."));
         if (copy)
         {
             if (target.ObjectKind == ObjectKind.GatheringPoint)
@@ -331,7 +332,7 @@ internal sealed class CreationUtilsComponent
         bool copy = ImGuiComponents.IconButton(FontAwesomeIcon.Copy);
         if (ImGui.IsItemHovered())
             ImGui.SetTooltip(
-                "Left click: Copy your position as JSON.\nRight click: Copy your position as C# code.");
+                _L("Left click: Copy your position as JSON.\nRight click: Copy your position as C# code."));
         if (copy)
         {
             ImGui.SetClipboardText($$"""

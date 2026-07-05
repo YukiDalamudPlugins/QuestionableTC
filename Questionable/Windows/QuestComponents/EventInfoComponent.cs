@@ -15,6 +15,7 @@ using Questionable.Data;
 using Questionable.Functions;
 using Questionable.Model;
 using Questionable.Model.Questing;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows.QuestComponents;
 
@@ -23,8 +24,8 @@ internal sealed class EventInfoComponent
     [SuppressMessage("ReSharper", "CollectionNeverUpdated.Local")]
     private readonly List<EventQuest> _eventQuests =
     [
-        new EventQuest("Limited Time Items", [new UnlockLinkId(506)], DateTime.MaxValue),
-        new EventQuest("Make It Rain", [new QuestId(5322)], AtDailyReset(new(2025, 6, 11)))
+        new EventQuest(_L("Limited Time Items"), [new UnlockLinkId(506)], DateTime.MaxValue),
+        new EventQuest(_L("Make It Rain"), [new QuestId(5322)], AtDailyReset(new(2025, 6, 11)))
     ];
 
     private readonly QuestData _questData;
@@ -111,7 +112,7 @@ internal sealed class EventInfoComponent
                     if (ImGuiComponents.IconButton(FontAwesomeIcon.Play))
                     {
                         _questController.SetNextQuest(quest);
-                        _questController.Start("SeasonalEventSelection");
+                        _questController.Start(_L("SeasonalEventSelection"));
                     }
 
                     bool hovered = ImGui.IsItemHovered();

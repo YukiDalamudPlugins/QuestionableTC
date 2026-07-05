@@ -4,6 +4,7 @@ using Questionable.Data;
 using Questionable.Model;
 using Questionable.Model.Common;
 using Questionable.Model.Questing;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Validation.Validators;
 
@@ -40,7 +41,7 @@ internal sealed class AethernetShortcutValidator : IQuestValidator
                 Step = stepId,
                 Type = EIssueType.InvalidAethernetShortcut,
                 Severity = EIssueSeverity.Error,
-                Description = $"Invalid aethernet shortcut: {aethernetShortcut.From} to {aethernetShortcut.To}"
+                Description = _LF("Invalid aethernet shortcut: {0} to {1}", aethernetShortcut.From, aethernetShortcut.To)
             };
         }
 

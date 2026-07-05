@@ -15,6 +15,7 @@ using Questionable.Functions;
 using Questionable.Model;
 using Questionable.Model.Questing;
 using Questionable.Windows.QuestComponents;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows;
 
@@ -37,7 +38,7 @@ internal sealed class PriorityWindow : LWindow
     public PriorityWindow(QuestController questController, QuestRegistry questRegistry, QuestFunctions questFunctions,
         QuestTooltipComponent questTooltipComponent, UiUtils uiUtils, IChatGui chatGui,
         IDalamudPluginInterface pluginInterface)
-        : base("Quest Priority###QuestionableQuestPriority")
+        : base(_L("Quest Priority") + "###QuestionableQuestPriority")
     {
         _questController = questController;
         _questRegistry = questRegistry;
@@ -58,23 +59,23 @@ internal sealed class PriorityWindow : LWindow
 
     public override void DrawContent()
     {
-        ImGui.Text("Quests to do first:");
+        ImGui.Text(_L("Quests to do first:"));
         DrawQuestFilter();
         DrawQuestList();
 
         List<ElementId> clipboardItems = ParseClipboardItems();
         ImGui.BeginDisabled(clipboardItems.Count == 0);
-        if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Download, "Import from Clipboard"))
+        if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Download, _L("Import from Clipboard")))
             ImportFromClipboard(clipboardItems);
         ImGui.EndDisabled();
         ImGui.SameLine();
         ImGui.BeginDisabled(_questController.ManualPriorityQuests.Count == 0);
-        if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Upload, "Export to Clibpoard"))
+        if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Upload, _L("Export to Clipboard")))
             ExportToClipboard();
-        if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Check, "Remove finished Quests"))
+        if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Check, _L("Remove finished Quests")))
             _questController.ManualPriorityQuests.RemoveAll(q => _questFunctions.IsQuestComplete(q.Id));
         ImGui.SameLine();
-        if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Trash, "Clear"))
+        if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.Trash, _L("Clear")))
             _questController.ClearQuestPriority();
         ImGui.EndDisabled();
 
@@ -83,22 +84,22 @@ internal sealed class PriorityWindow : LWindow
         ImGui.Separator();
         ImGui.Spacing();
         ImGui.TextWrapped(
-            "If you have an active MSQ quest, Questionable will generally try to do:");
-        ImGui.BulletText("'Priority' quests: class quests, ARR primals, ARR raids");
+            _L("If you have an active MSQ quest, Questionable will generally try to do:"));
+        ImGui.BulletText(_L("'Priority' quests: class quests, ARR primals, ARR raids"));
         ImGui.BulletText(
-            "Supported quests in your 'To-Do list'\n(quests from your Journal that are always on-screen)");
-        ImGui.BulletText("MSQ quest (if available, unless it is marked as 'ignored'\nin your Journal)");
+            _L("Supported quests in your 'To-Do list'\n(quests from your Journal that are always on-screen)"));
+        ImGui.BulletText(_L("MSQ quest (if available, unless it is marked as 'ignored'\nin your Journal)"));
         ImGui.TextWrapped(
-            "If you don't have any active MSQ quest, it will always try to pick up the next quest in the MSQ first.");
+            _L("If you don't have any active MSQ quest, it will always try to pick up the next quest in the MSQ first."));
     }
 
     private void DrawQuestFilter()
     {
         ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-        if (ImGui.BeginCombo($"##QuestSelection", "Add Quest...", ImGuiComboFlags.HeightLarge))
+        if (ImGui.BeginCombo($"##QuestSelection", _L("Add Quest..."), ImGuiComboFlags.HeightLarge))
         {
             ImGui.SetNextItemWidth(ImGui.GetContentRegionAvail().X);
-            bool addFirst = ImGui.InputTextWithHint("", "Filter...", ref _searchString, 256,
+            bool addFirst = ImGui.InputTextWithHint("", _L("Filter..."), ref _searchString, 256,
                 ImGuiInputTextFlags.AutoSelectAll | ImGuiInputTextFlags.EnterReturnsTrue);
 
             IEnumerable<Quest> foundQuests;
@@ -295,7 +296,7 @@ internal sealed class PriorityWindow : LWindow
     {
         string clipboardText = EncodeQuestPriority();
         ImGui.SetClipboardText(clipboardText);
-        _chatGui.Print("Copied quests to clipboard.", CommandHandler.MessageTag, CommandHandler.TagColor);
+        _chatGui.Print(_L("Copied quests to clipboard."), CommandHandler.MessageTag, CommandHandler.TagColor);
     }
 
     private void ImportFromClipboard(List<ElementId> questElements)

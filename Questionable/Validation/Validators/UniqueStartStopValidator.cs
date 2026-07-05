@@ -2,6 +2,7 @@
 using System.Linq;
 using Questionable.Model;
 using Questionable.Model.Questing;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Validation.Validators;
 
@@ -27,7 +28,7 @@ internal sealed class UniqueStartStopValidator : IQuestValidator
                     Step = accept.StepId,
                     Type = EIssueType.UnexpectedAcceptQuestStep,
                     Severity = EIssueSeverity.Error,
-                    Description = "Unexpected AcceptQuest step",
+                    Description = _L("Unexpected AcceptQuest step"),
                 };
             }
         }
@@ -41,7 +42,7 @@ internal sealed class UniqueStartStopValidator : IQuestValidator
                 Step = null,
                 Type = EIssueType.MissingQuestAccept,
                 Severity = EIssueSeverity.Error,
-                Description = "No AcceptQuest step",
+                Description = _L("No AcceptQuest step"),
             };
         }
 
@@ -60,7 +61,7 @@ internal sealed class UniqueStartStopValidator : IQuestValidator
                     Step = complete.StepId,
                     Type = EIssueType.UnexpectedCompleteQuestStep,
                     Severity = EIssueSeverity.Error,
-                    Description = "Unexpected CompleteQuest step",
+                    Description = _L("Unexpected CompleteQuest step"),
                 };
             }
         }
@@ -74,7 +75,7 @@ internal sealed class UniqueStartStopValidator : IQuestValidator
                 Step = null,
                 Type = EIssueType.MissingQuestComplete,
                 Severity = EIssueSeverity.Error,
-                Description = "No CompleteQuest step",
+                Description = _L("No CompleteQuest step"),
             };
         }
     }

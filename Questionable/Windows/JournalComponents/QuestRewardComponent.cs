@@ -9,6 +9,7 @@ using Questionable.Controller;
 using Questionable.Data;
 using Questionable.Model;
 using Questionable.Windows.QuestComponents;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows.JournalComponents;
 
@@ -35,21 +36,21 @@ internal sealed class QuestRewardComponent
 
     public void DrawItemRewards()
     {
-        using var tab = ImRaii.TabItem("Item Rewards");
+        using var tab = ImRaii.TabItem(_L("Item Rewards"));
         if (!tab)
             return;
 
-        ImGui.Checkbox("Show rewards from seasonal event quests", ref _showEventRewards);
+        ImGui.Checkbox(_L("Show rewards from seasonal event quests"), ref _showEventRewards);
         ImGui.Spacing();
 
         ImGui.BulletText(
-            "Only untradeable items are listed (e.g. the Wind-up Airship can be sold on the market board).");
+            _L("Only untradeable items are listed (e.g. the Wind-up Airship can be sold on the market board)."));
 
-        DrawGroup("Mounts", EItemRewardType.Mount);
-        DrawGroup("Minions", EItemRewardType.Minion);
-        DrawGroup("Orchestrion Rolls", EItemRewardType.OrchestrionRoll);
-        DrawGroup("Triple Triad Cards", EItemRewardType.TripleTriadCard);
-        DrawGroup("Fashion Accessories", EItemRewardType.FashionAccessory);
+        DrawGroup(_L("Mounts"), EItemRewardType.Mount);
+        DrawGroup(_L("Minions"), EItemRewardType.Minion);
+        DrawGroup(_L("Orchestrion Rolls"), EItemRewardType.OrchestrionRoll);
+        DrawGroup(_L("Triple Triad Cards"), EItemRewardType.TripleTriadCard);
+        DrawGroup(_L("Fashion Accessories"), EItemRewardType.FashionAccessory);
     }
 
     private void DrawGroup(string label, EItemRewardType type)
@@ -83,7 +84,7 @@ internal sealed class QuestRewardComponent
                     if (!tooltip)
                         continue;
 
-                    ImGui.Text($"Obtained from: {questInfo.Name}");
+                    ImGui.Text(_LF("Obtained from: {0}", questInfo.Name));
                     using (ImRaii.PushIndent())
                         _questTooltipComponent.DrawInner(questInfo, false);
                 }

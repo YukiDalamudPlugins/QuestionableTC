@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Questionable.Controller.Steps;
 using Questionable.Data;
 using Questionable.Model.Questing;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.External;
 
@@ -70,7 +71,7 @@ internal sealed class AutoDutyIpc
     public void StartInstance(uint cfcId)
     {
         if (!_territoryData.TryGetContentFinderCondition(cfcId, out var cfcData))
-            throw new TaskException($"Unknown ContentFinderConditionId {cfcId}");
+            throw new TaskException(_LF("Unknown ContentFinderConditionId {0}", cfcId));
 
         try
         {
@@ -79,7 +80,7 @@ internal sealed class AutoDutyIpc
         }
         catch (IpcError e)
         {
-            throw new TaskException($"Unable to run content with AutoDuty: {e.Message}", e);
+            throw new TaskException(_LF("Unable to run content with AutoDuty: {0}", e.Message), e);
         }
     }
 
@@ -104,7 +105,7 @@ internal sealed class AutoDutyIpc
         }
         catch (IpcError e)
         {
-            throw new TaskException($"Unable to stop AutoDuty: {e.Message}", e);
+            throw new TaskException(_LF("Unable to stop AutoDuty: {0}", e.Message), e);
         }
     }
 }

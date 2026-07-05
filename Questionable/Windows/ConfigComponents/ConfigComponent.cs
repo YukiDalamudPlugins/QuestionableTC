@@ -6,6 +6,7 @@ using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Plugin;
 using ImGuiNET;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows.ConfigComponents;
 
@@ -17,16 +18,16 @@ internal abstract class ConfigComponent
 
     protected readonly string[] SupportedCfcOptions =
     [
-        $"{SeIconChar.Circle.ToIconChar()} Enabled (Default)",
-        $"{SeIconChar.Circle.ToIconChar()} Enabled",
-        $"{SeIconChar.Cross.ToIconChar()} Disabled"
+        $"{SeIconChar.Circle.ToIconChar()} " + _L("Enabled (Default)"),
+        $"{SeIconChar.Circle.ToIconChar()} " + _L("Enabled"),
+        $"{SeIconChar.Cross.ToIconChar()} " + _L("Disabled")
     ];
 
     protected readonly string[] UnsupportedCfcOptions =
     [
-        $"{SeIconChar.Cross.ToIconChar()} Disabled (Default)",
-        $"{SeIconChar.Circle.ToIconChar()} Enabled",
-        $"{SeIconChar.Cross.ToIconChar()} Disabled"
+        $"{SeIconChar.Cross.ToIconChar()} " + _L("Disabled (Default)"),
+        $"{SeIconChar.Circle.ToIconChar()} " + _L("Enabled"),
+        $"{SeIconChar.Cross.ToIconChar()} " + _L("Disabled")
     ];
 
     private readonly IDalamudPluginInterface _pluginInterface;
@@ -86,7 +87,7 @@ internal abstract class ConfigComponent
         using var _ = ImRaii.Tooltip();
 
         ImGui.TextColored(ImGuiColors.DalamudYellow,
-            "While testing, the following issues have been found:");
+            _L("While testing, the following issues have been found:"));
         foreach (string note in notes)
             ImGui.BulletText(note);
     }

@@ -20,6 +20,7 @@ using Questionable.Model.Common;
 using Questionable.Model.Questing;
 using GrandCompany = FFXIVClientStructs.FFXIV.Client.UI.Agent.GrandCompany;
 using Quest = Questionable.Model.Quest;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Functions;
 
@@ -276,17 +277,17 @@ internal sealed unsafe class QuestFunctions
 
         var scenarioTree = AgentScenarioTree.Instance();
         if (scenarioTree == null)
-            return (QuestReference.NoQuest(MainScenarioQuestState.Unavailable), "No Scenario Tree");
+            return (QuestReference.NoQuest(MainScenarioQuestState.Unavailable), _L("No Scenario Tree"));
 
         if (scenarioTree->Data == null)
-            return (QuestReference.NoQuest(MainScenarioQuestState.LoadingScreen), "Scenario Tree Data is null");
+            return (QuestReference.NoQuest(MainScenarioQuestState.LoadingScreen), _L("Scenario Tree Data is null"));
 
         QuestId currentQuest = new QuestId(scenarioTree->Data->CurrentScenarioQuest);
         string extraData = $"sq: {currentQuest}";
         if (currentQuest.Value == 0)
         {
             if (IsMainScenarioQuestComplete())
-                return (QuestReference.NoQuest(MainScenarioQuestState.Complete), "Main Scenario is complete");
+                return (QuestReference.NoQuest(MainScenarioQuestState.Complete), _L("Main Scenario is complete"));
 
             // fallback lookup; find a quest which isn't completed but where all prequisites are met
             // excluding branching quests
@@ -297,7 +298,7 @@ internal sealed unsafe class QuestFunctions
                 .Where(q => IsReadyToAcceptQuest(q.QuestId, true))
                 .ToList();
             if (potentialQuests.Count == 0)
-                return (QuestReference.NoQuest(MainScenarioQuestState.Unavailable), "No potential quests found");
+                return (QuestReference.NoQuest(MainScenarioQuestState.Unavailable), _L("No potential quests found"));
             else if (potentialQuests.Count > 1)
             {
                 // for all of these (except the GC quests), questionable normally auto-picks the next quest based on the
@@ -317,7 +318,7 @@ internal sealed unsafe class QuestFunctions
                 else if (potentialQuests.Any(x => x.QuestId.Value == 4865))
                     currentQuest = new QuestId(4865); // DT: To Kozama'uk vs. To Urqopacha
                 if (potentialQuests.Count != 1)
-                    return (QuestReference.NoQuest(MainScenarioQuestState.Unavailable), "Multiple potential quests found: " +
+                    return (QuestReference.NoQuest(MainScenarioQuestState.Unavailable), _L("Multiple potential quests found:") + " " +
                                                                             string.Join(", ", potentialQuests.Select(x => x.QuestId.Value)));
             }
             else
@@ -333,20 +334,20 @@ internal sealed unsafe class QuestFunctions
         // is one you've just completed. We return 255 as sequence here, since that is the end of said quest;
         // but this is just really hoping that this breaks nothing.
         if (IsQuestComplete(currentQuest))
-            return (new(currentQuest, 255, MainScenarioQuestState.Available), $"Quest {currentQuest.Value} complete");
+            return (new(currentQuest, 255, MainScenarioQuestState.Available), _LF("Quest {0} complete", currentQuest.Value));
         else if (!IsReadyToAcceptQuest(currentQuest))
-            return (QuestReference.NoQuest(MainScenarioQuestState.Unavailable), $"Not readdy to accept quest {currentQuest.Value}");
+            return (QuestReference.NoQuest(MainScenarioQuestState.Unavailable), _LF("Not ready to accept quest {0}", currentQuest.Value));
 
         var currentLevel = _clientState.LocalPlayer?.Level;
 
         // are we in a loading screen?
         if (currentLevel == null)
-            return (QuestReference.NoQuest(MainScenarioQuestState.LoadingScreen), "In loading screen");
+            return (QuestReference.NoQuest(MainScenarioQuestState.LoadingScreen), _L("In loading screen"));
 
         // if we're not at a high enough level to continue, we also ignore it
         if (_questRegistry.TryGetQuest(currentQuest, out Quest? quest)
             && quest.Info.Level > currentLevel)
-            return (QuestReference.NoQuest(MainScenarioQuestState.Unavailable), "Low level");
+            return (QuestReference.NoQuest(MainScenarioQuestState.Unavailable), _L("Low level"));
 
         return (new(currentQuest, QuestManager.GetQuestSequence(currentQuest.Value), MainScenarioQuestState.Available), extraData);
     }

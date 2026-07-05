@@ -6,6 +6,7 @@ using Questionable.Controller;
 using Questionable.Functions;
 using Questionable.Model;
 using Questionable.Model.Questing;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows.JournalComponents;
 
@@ -32,14 +33,14 @@ internal sealed class QuestJournalUtils
         if (!popup)
             return;
 
-        if (ImGui.MenuItem("Start as next quest", _questFunctions.IsReadyToAcceptQuest(questInfo.QuestId)))
+        if (ImGui.MenuItem(_L("Start as next quest"), _questFunctions.IsReadyToAcceptQuest(questInfo.QuestId)))
         {
             _questController.SetNextQuest(quest);
             _questController.Start(label);
         }
 
         bool openInQuestMap = _commandManager.Commands.ContainsKey("/questinfo");
-        if (ImGui.MenuItem("View in Quest Map", questInfo.QuestId is QuestId && openInQuestMap))
+        if (ImGui.MenuItem(_L("View in Quest Map"), questInfo.QuestId is QuestId && openInQuestMap))
         {
             _commandManager.ProcessCommand($"/questinfo {questInfo.QuestId}");
         }
@@ -54,8 +55,8 @@ internal sealed class QuestJournalUtils
         if (!popup)
             return;
 
-        if (ImGui.Checkbox("Show only Available Quests", ref journalUi.Filter.AvailableOnly) ||
-            ImGui.Checkbox("Hide Quests Without Path", ref journalUi.Filter.HideNoPaths))
+        if (ImGui.Checkbox(_L("Show only Available Quests"), ref journalUi.Filter.AvailableOnly) ||
+            ImGui.Checkbox(_L("Hide Quests Without Path"), ref journalUi.Filter.HideNoPaths))
             journalUi.UpdateFilter();
     }
 }

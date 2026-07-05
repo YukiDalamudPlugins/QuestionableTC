@@ -31,6 +31,7 @@ using Questionable.Windows.ConfigComponents;
 using Questionable.Windows.JournalComponents;
 using Questionable.Windows.QuestComponents;
 using Action = Questionable.Controller.Steps.Interactions.Action;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable;
 
@@ -101,7 +102,7 @@ public sealed class QuestionablePlugin : IDalamudPlugin
         }
         catch (Exception)
         {
-            chatGui.PrintError("Unable to load plugin, check /xllog for details", "Questionable");
+            chatGui.PrintError(_L("Unable to load plugin, check /xllog for details"), _L("Questionable"));
             throw;
         }
     }

@@ -2,6 +2,7 @@
 using Questionable.Functions;
 using Questionable.Model;
 using Questionable.Model.Questing;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Validation.Validators;
 
@@ -58,7 +59,7 @@ internal sealed class DialogueChoiceValidator : IQuestValidator
                     Step = stepId,
                     Type = EIssueType.InvalidExcelRef,
                     Severity = EIssueSeverity.Error,
-                    Description = $"{label} invalid: {excelSheet} → {excelRef.AsKey()}",
+                    Description = _LF("{0} invalid: {1} → {2}", label, excelSheet ?? "", excelRef.AsKey()),
                 };
             }
         }
@@ -73,7 +74,7 @@ internal sealed class DialogueChoiceValidator : IQuestValidator
                     Step = stepId,
                     Type = EIssueType.InvalidExcelRef,
                     Severity = EIssueSeverity.Error,
-                    Description = $"{label} invalid: {excelSheet} → {excelRef.AsRowId()}",
+                    Description = _LF("{0} invalid: {1} → {2}", label, excelSheet ?? "", excelRef.AsRowId()),
                 };
             }
         }

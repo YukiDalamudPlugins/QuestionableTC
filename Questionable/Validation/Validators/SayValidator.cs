@@ -4,6 +4,7 @@ using Lumina.Text.ReadOnly;
 using Questionable.Functions;
 using Questionable.Model;
 using Questionable.Model.Questing;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Validation.Validators;
 
@@ -38,7 +39,7 @@ internal sealed class SayValidator : IQuestValidator
                     Step = data.StepId,
                     Type = EIssueType.InvalidChatMessage,
                     Severity = EIssueSeverity.Error,
-                    Description = $"Invalid chat message: {excelString.Value}",
+                    Description = _LF("Invalid chat message: {0}", excelString.Value),
                 };
             }
         }

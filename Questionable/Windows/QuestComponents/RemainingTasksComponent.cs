@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using ImGuiNET;
 using Questionable.Controller;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows.QuestComponents;
 

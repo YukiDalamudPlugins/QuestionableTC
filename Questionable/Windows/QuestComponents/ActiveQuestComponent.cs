@@ -15,6 +15,7 @@ using Questionable.Controller.Steps.Shared;
 using Questionable.Functions;
 using Questionable.Model;
 using Questionable.Model.Questing;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Windows.QuestComponents;
 
@@ -71,7 +72,7 @@ internal sealed partial class ActiveQuestComponent
             var questWork = DrawQuestWork(currentQuest, isMinimized);
 
             if (_combatController.IsRunning)
-                ImGui.TextColored(ImGuiColors.DalamudOrange, "In Combat");
+                ImGui.TextColored(ImGuiColors.DalamudOrange, _L("In Combat"));
             else if (_questController.CurrentTaskState is { } currentTaskState)
             {
                 using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudOrange);
@@ -121,15 +122,15 @@ internal sealed partial class ActiveQuestComponent
         }
         else
         {
-            ImGui.Text("No active quest");
+            ImGui.Text(_L("No active quest"));
             if (!isMinimized)
-                ImGui.TextColored(ImGuiColors.DalamudGrey, $"{_questRegistry.Count} quests loaded");
+                ImGui.TextColored(ImGuiColors.DalamudGrey, _LF("{0} quests loaded", _questRegistry.Count));
 
             if (ImGuiComponents.IconButton(FontAwesomeIcon.Stop))
             {
                 _movementController.Stop();
-                _questController.Stop("Manual (no active quest)");
-                _gatheringController.Stop("Manual (no active quest)");
+                _questController.Stop(_L("Manual (no active quest)"));
+                _gatheringController.Stop(_L("Manual (no active quest)"));
             }
 
             ImGui.SameLine();
@@ -144,14 +145,22 @@ internal sealed partial class ActiveQuestComponent
         if (currentQuestType == QuestController.ECurrentQuestType.Simulated)
         {
             using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudRed);
-            ImGui.TextUnformatted(
-                $"Simulated Quest: {Shorten(currentQuest.Quest.Info.Name)} ({currentQuest.Quest.Id}) / {currentQuest.Sequence} / {currentQuest.Step}");
+            ImGui.TextUnformatted(_L("Simulated Quest: ") +
+                _LF("{0} ({1}) / {2} / {3}",
+                    Shorten(currentQuest.Quest.Info.Name),
+                    currentQuest.Quest.Id,
+                    currentQuest.Sequence,
+                    currentQuest.Step));
         }
         else if (currentQuestType == QuestController.ECurrentQuestType.Gathering)
         {
             using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.ParsedGold);
-            ImGui.TextUnformatted(
-                $"Gathering: {Shorten(currentQuest.Quest.Info.Name)} ({currentQuest.Quest.Id}) / {currentQuest.Sequence} / {currentQuest.Step}");
+            ImGui.TextUnformatted(_L("Gathering: ") +
+                _LF("{0} ({1}) / {2} / {3}",
+                    Shorten(currentQuest.Quest.Info.Name),
+                    currentQuest.Quest.Id,
+                    currentQuest.Sequence,
+                    currentQuest.Step));
         }
         else
         {
@@ -167,16 +176,20 @@ internal sealed partial class ActiveQuestComponent
 
                     if (ImGui.IsItemHovered())
                         ImGui.SetTooltip(
-                            "This quest is loaded from your 'pluginConfigs\\Questionable\\Quests' directory.\nThis gets loaded even if Questionable ships with a newer/different version of the quest.");
+                            _L("This quest is loaded from your 'pluginConfigs\\Questionable\\Quests' directory.\nThis gets loaded even if Questionable ships with a newer/different version of the quest."));
                 }
 
-                ImGui.TextUnformatted(
-                    $"Quest: {Shorten(startedQuest.Quest.Info.Name)} ({startedQuest.Quest.Id}) / {startedQuest.Sequence} / {startedQuest.Step}");
+                ImGui.TextUnformatted(_L("Quest: ") +
+                    _LF("{0} ({1}) / {2} / {3}",
+                        Shorten(startedQuest.Quest.Info.Name),
+                        startedQuest.Quest.Id,
+                        startedQuest.Sequence,
+                        startedQuest.Step));
 
                 if (startedQuest.Quest.Root.Disabled)
                 {
                     ImGui.SameLine();
-                    ImGui.TextColored(ImGuiColors.DalamudRed, "Disabled");
+                    ImGui.TextColored(ImGuiColors.DalamudRed, _L("Disabled"));
                 }
 
                 if (_configuration.Advanced.AdditionalStatusInformation && _questController.IsInterruptible())
@@ -188,11 +201,11 @@ internal sealed partial class ActiveQuestComponent
                         using var tooltip = ImRaii.Tooltip();
                         if (tooltip)
                         {
-                            ImGui.Text("This quest sequence starts with a teleport to an Aetheryte.");
+                            ImGui.Text(_L("This quest sequence starts with a teleport to an Aetheryte."));
                             ImGui.Text(
-                                "Certain priority quest (e.g. class quests) may be started/completed by the plugin prior to continuing with this quest.");
+                                _L("Certain priority quest (e.g. class quests) may be started/completed by the plugin prior to continuing with this quest."));
                             ImGui.Separator();
-                            ImGui.Text("Available priority quests:");
+                            ImGui.Text(_L("Available priority quests:"));
 
                             List<ElementId> priorityQuests = _questFunctions.GetNextPriorityQuestsThatCanBeAccepted();
                             if (priorityQuests.Count > 0)
@@ -204,7 +217,7 @@ internal sealed partial class ActiveQuestComponent
                                 }
                             }
                             else
-                                ImGui.BulletText("(none)");
+                                ImGui.BulletText(_L("(none)"));
                         }
                     }
                 }
@@ -214,8 +227,12 @@ internal sealed partial class ActiveQuestComponent
             if (nextQuest != null)
             {
                 using var _ = ImRaii.PushColor(ImGuiCol.Text, ImGuiColors.DalamudYellow);
-                ImGui.TextUnformatted(
-                    $"Next Quest: {Shorten(nextQuest.Quest.Info.Name)} ({nextQuest.Quest.Id}) / {nextQuest.Sequence} / {nextQuest.Step}");
+                ImGui.TextUnformatted(_L("Next Quest: ") +
+                    _LF("{0} ({1}) / {2} / {3}",
+                        Shorten(nextQuest.Quest.Info.Name),
+                        nextQuest.Quest.Id,
+                        nextQuest.Sequence,
+                        nextQuest.Step));
             }
         }
     }
@@ -247,7 +264,7 @@ internal sealed partial class ActiveQuestComponent
             {
                 string progressText = MultipleWhitespaceRegex().Replace(questWork.ToString(), " ");
                 ImGui.SetClipboardText(progressText);
-                _chatGui.Print($"Copied '{progressText}' to clipboard");
+                _chatGui.Print(_LF("Copied '{0}' to clipboard", progressText));
             }
 
             if (ImGui.IsItemHovered())
@@ -269,9 +286,9 @@ internal sealed partial class ActiveQuestComponent
             using var disabled = ImRaii.Disabled();
 
             if (currentQuest.Quest.Id == _questController.NextQuest?.Quest.Id)
-                ImGui.TextUnformatted("(Next quest in story line not accepted)");
+                ImGui.TextUnformatted(_L("(Next quest in story line not accepted)"));
             else
-                ImGui.TextUnformatted("(Not accepted)");
+                ImGui.TextUnformatted(_L("(Not accepted)"));
         }
 
         return questWork;
@@ -287,16 +304,16 @@ internal sealed partial class ActiveQuestComponent
             if (questProgressInfo == null)
                 _questController.SetNextQuest(currentQuest.Quest);
 
-            _questController.Start("UI start");
+            _questController.Start(_L("UI start"));
         }
 
         if (!isMinimized)
         {
             ImGui.SameLine();
 
-            if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.StepForward, "Step"))
+            if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.StepForward, _L("Step")))
             {
-                _questController.StartSingleStep("UI step");
+                _questController.StartSingleStep(_L("UI step"));
             }
         }
 
@@ -306,8 +323,8 @@ internal sealed partial class ActiveQuestComponent
         if (ImGuiComponents.IconButton(FontAwesomeIcon.Stop))
         {
             _movementController.Stop();
-            _questController.Stop("UI stop");
-            _gatheringController.Stop("UI stop");
+            _questController.Stop(_L("UI stop"));
+            _gatheringController.Stop(_L("UI stop"));
         }
 
         if (isMinimized)
@@ -328,7 +345,7 @@ internal sealed partial class ActiveQuestComponent
             ImGui.BeginDisabled(lastStep);
             if (colored)
                 ImGui.PushStyleColor(ImGuiCol.Text, ImGuiColors.ParsedGreen);
-            if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.ArrowCircleRight, "Skip"))
+            if (ImGuiComponents.IconButtonWithText(FontAwesomeIcon.ArrowCircleRight, _L("Skip")))
             {
                 _movementController.Stop();
                 _questController.Skip(currentQuest.Quest.Id, currentQuest.Sequence);
@@ -359,8 +376,8 @@ internal sealed partial class ActiveQuestComponent
         var simulatedQuest = _questController.SimulatedQuest;
 
         ImGui.Separator();
-        ImGui.TextColored(ImGuiColors.DalamudRed, "Quest sim active (experimental)");
-        ImGui.Text($"Sequence: {simulatedQuest.Sequence}");
+        ImGui.TextColored(ImGuiColors.DalamudRed, _L("Quest sim active (experimental)"));
+        ImGui.Text(_LF("Sequence: {0}", simulatedQuest.Sequence));
 
         ImGui.BeginDisabled(simulatedQuest.Sequence == 0);
         if (ImGuiComponents.IconButton(FontAwesomeIcon.Minus))
@@ -400,7 +417,7 @@ internal sealed partial class ActiveQuestComponent
         {
             using var _ = ImRaii.PushId("SimulatedStep");
 
-            ImGui.Text($"Step: {simulatedQuest.Step} / {simulatedSequence.Steps.Count - 1}");
+            ImGui.Text(_LF("Step: {0} / {1}", simulatedQuest.Step, simulatedSequence.Steps.Count - 1));
 
             ImGui.BeginDisabled(simulatedQuest.Step == 0);
             if (ImGuiComponents.IconButton(FontAwesomeIcon.Minus))
@@ -429,13 +446,13 @@ internal sealed partial class ActiveQuestComponent
 
             ImGui.EndDisabled();
 
-            if (ImGui.Button("Skip current task"))
+            if (ImGui.Button(_L("Skip current task")))
             {
                 _questController.SkipSimulatedTask();
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Clear sim"))
+            if (ImGui.Button(_L("Clear sim")))
             {
                 _questController.SimulateQuest(null, 0, 0);
 

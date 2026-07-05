@@ -4,6 +4,7 @@ using Dalamud.Plugin.Services;
 using Lumina.Excel.Sheets;
 using Questionable.Model;
 using Questionable.Model.Questing;
+using static Questionable.Utils.LocalizeShortcut;
 
 namespace Questionable.Data;
 
@@ -19,17 +20,17 @@ internal sealed class JournalData
         var limsaStart = dataManager.GetExcelSheet<QuestRedo>().GetRow(1);
         var gridaniaStart = dataManager.GetExcelSheet<QuestRedo>().GetRow(2);
         var uldahStart = dataManager.GetExcelSheet<QuestRedo>().GetRow(3);
-        var genreLimsa = new Genre(uint.MaxValue - 3, "Starting in Limsa Lominsa", 1,
+        var genreLimsa = new Genre(uint.MaxValue - 3, _L("Starting in Limsa Lominsa"), 1,
             new uint[] { 108, 109 }.Concat(limsaStart.QuestRedoParam.Select(x => x.Quest.RowId))
                 .Where(x => x != 0)
                 .Select(x => questData.GetQuestInfo(QuestId.FromRowId(x)))
                 .ToList());
-        var genreGridania = new Genre(uint.MaxValue - 2, "Starting in Gridania", 1,
+        var genreGridania = new Genre(uint.MaxValue - 2, _L("Starting in Gridania"), 1,
             new uint[] { 85, 123, 124 }.Concat(gridaniaStart.QuestRedoParam.Select(x => x.Quest.RowId))
                 .Where(x => x != 0)
                 .Select(x => questData.GetQuestInfo(QuestId.FromRowId(x)))
                 .ToList());
-        var genreUldah = new Genre(uint.MaxValue - 1, "Starting in Ul'dah", 1,
+        var genreUldah = new Genre(uint.MaxValue - 1, _L("Starting in Ul'dah"), 1,
             new uint[] { 568, 569, 570 }.Concat(uldahStart.QuestRedoParam.Select(x => x.Quest.RowId))
                 .Where(x => x != 0)
                 .Select(x => questData.GetQuestInfo(QuestId.FromRowId(x)))
