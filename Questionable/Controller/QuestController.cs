@@ -16,6 +16,7 @@ using Questionable.Controller.Steps;
 using Questionable.Controller.Steps.Common;
 using Questionable.Controller.Steps.Interactions;
 using Questionable.Controller.Steps.Shared;
+using Questionable.Controller.Utils;
 using Questionable.Data;
 using Questionable.Functions;
 using Questionable.Model;
@@ -53,6 +54,7 @@ internal sealed class QuestController : MiniTaskController<QuestController>
     private readonly Configuration _configuration;
     private readonly TaskCreator _taskCreator;
     private readonly SinglePlayerDutyConfigComponent _singlePlayerDutyConfigComponent;
+    private readonly HighlightObject _highlightObject;
     private readonly ILogger<QuestController> _logger;
 
     private readonly object _progressLock = new();
@@ -122,7 +124,8 @@ internal sealed class QuestController : MiniTaskController<QuestController>
         IServiceProvider serviceProvider,
         InterruptHandler interruptHandler,
         IDataManager dataManager,
-        SinglePlayerDutyConfigComponent singlePlayerDutyConfigComponent)
+        SinglePlayerDutyConfigComponent singlePlayerDutyConfigComponent,
+        HighlightObject highlightObject)
         : base(chatGui, condition, serviceProvider, interruptHandler, dataManager, logger)
     {
         _clientState = clientState;
@@ -141,6 +144,7 @@ internal sealed class QuestController : MiniTaskController<QuestController>
         _configuration = configuration;
         _taskCreator = taskCreator;
         _singlePlayerDutyConfigComponent = singlePlayerDutyConfigComponent;
+        _highlightObject = highlightObject;
         _logger = logger;
 
         _condition.ConditionChange += OnConditionChange;
@@ -585,6 +589,7 @@ internal sealed class QuestController : MiniTaskController<QuestController>
                 {
                     if (_questRegistry.TryGetQuest(currentQuestId, out var quest))
                     {
+                        _highlightObject.SetHighlight([]);
                         _logger.LogInformation("New quest: {QuestName}", quest.Info.Name);
 
                         TryStopOnQuestAccepted(quest.Id);
@@ -658,6 +663,7 @@ internal sealed class QuestController : MiniTaskController<QuestController>
 
             if (questToRun.Sequence != currentSequence)
             {
+                _highlightObject.SetHighlight([]);
                 questToRun.SetSequence(currentSequence);
                 CheckNextTasks(
                     $"New sequence {questToRun == _startedQuest}/{_questFunctions.GetCurrentQuestInternal(true)}");
@@ -790,6 +796,7 @@ internal sealed class QuestController : MiniTaskController<QuestController>
         _stuckStreakKey = null;
         _stuckStreakCount = 0;
         _prereqAttempted.Clear();
+        _highlightObject.SetHighlight([]);
         using var scope = _logger.BeginScope($"Stop/{label}");
         if (IsRunning || AutomationType != EAutomationType.Manual)
         {

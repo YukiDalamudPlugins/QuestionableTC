@@ -939,6 +939,13 @@
     <Value lang="zh-tw">在所有副本中隱藏任務視窗</Value>
   </Entry>
   <Entry>
+    <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs -->
+    <Key>Highlight NPCs related to the current quest sequence</Key>
+    <Value lang="ja-jp">現在のクエストシーケンスに関連するNPCをハイライト</Value>
+    <Value lang="zh-cn">高亮显示与当前任务序列相关的 NPC</Value>
+    <Value lang="zh-tw">高亮顯示與目前任務序列相關的 NPC</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\ConfigComponents\DutyConfigComponent.cs, Windows\ConfigComponents\SinglePlayerDutyConfigComponent.cs, Windows\ConfigComponents\StopConditionComponent.cs -->
     <Key>Hold CTRL to enable this button.</Key>
     <Value lang="ja-jp">このボタンを有効にするにはCTRLを押したままにしてください。</Value>

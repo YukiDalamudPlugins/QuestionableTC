@@ -117,6 +117,7 @@ public sealed class QuestionablePlugin : IDalamudPlugin
     {
         serviceCollection.AddSingleton<AetheryteFunctions>();
         serviceCollection.AddSingleton<ExcelFunctions>();
+        serviceCollection.AddSingleton<HighlightObject>();
         serviceCollection.AddSingleton<GameFunctions>();
         serviceCollection.AddSingleton<ChatFunctions>();
         serviceCollection.AddSingleton<QuestFunctions>();

@@ -18,6 +18,7 @@ using LLib.GameUI;
 using Lumina.Excel.Sheets;
 using Microsoft.Extensions.Logging;
 using Questionable.Controller.Steps.Interactions;
+using Questionable.Controller.Utils;
 using Questionable.Model;
 using Questionable.Model.Questing;
 using Action = Lumina.Excel.Sheets.Action;
@@ -40,6 +41,7 @@ internal sealed unsafe class GameFunctions
     private readonly IClientState _clientState;
     private readonly IGameGui _gameGui;
     private readonly Configuration _configuration;
+    private readonly HighlightObject _highlightObject;
     private readonly ILogger<GameFunctions> _logger;
     private readonly AbandonDutyDelegate _abandonDuty;
 
@@ -56,8 +58,10 @@ internal sealed unsafe class GameFunctions
         IGameGui gameGui,
         Configuration configuration,
         ISigScanner sigScanner,
+        HighlightObject highlightObject,
         ILogger<GameFunctions> logger)
     {
+        _highlightObject = highlightObject;
         _questFunctions = questFunctions;
         _dataManager = dataManager;
         _objectTable = objectTable;
@@ -133,6 +137,7 @@ internal sealed unsafe class GameFunctions
 
             if (gameObject.DataId == dataId && (kind == null || kind.Value == gameObject.ObjectKind))
             {
+                _highlightObject.AddHighlight(gameObject.DataId);
                 return gameObject;
             }
         }

@@ -91,6 +91,9 @@ internal sealed class Configuration : IPluginConfiguration
 
     internal sealed class AdvancedConfiguration
     {
+        public bool HighlightSelectedNpc { get; set; } = true;
+        public FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectHighlightColor HighlightColor { get; set; } =
+            FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectHighlightColor.Yellow;
         public bool DebugOverlay { get; set; }
         public bool CombatDataOverlay { get; set; }
         public bool NeverFly { get; set; }

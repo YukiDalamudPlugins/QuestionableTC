@@ -163,6 +163,13 @@ internal sealed class GeneralConfigComponent : ConfigComponent
                 Configuration.General.ShowIncompleteSeasonalEvents = showIncompleteSeasonalEvents;
                 Save();
             }
+
+            bool highlightSelectedNpc = Configuration.Advanced.HighlightSelectedNpc;
+            if (ImGui.Checkbox(_L("Highlight NPCs related to the current quest sequence"), ref highlightSelectedNpc))
+            {
+                Configuration.Advanced.HighlightSelectedNpc = highlightSelectedNpc;
+                Save();
+            }
         }
 
         ImGui.Separator();
