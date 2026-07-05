@@ -55,7 +55,9 @@ internal static class WaitAtEnd
 
                 case EInteractionType.Duty when !autoDutyIpc.IsConfiguredToRunContent(step.DutyOptions):
                 case EInteractionType.SinglePlayerDuty when !bossModIpc.IsConfiguredToRunSoloInstance(quest.Id, step.SinglePlayerDutyOptions):
-                    return [new EndAutomation()];
+                    // instead of ending automation (upstream behavior), wait for the player to finish
+                    // the duty manually — the sequence advances afterwards and questing continues
+                    return [new WaitNextStepOrSequence()];
 
                 case EInteractionType.WalkTo:
                 case EInteractionType.Jump:
