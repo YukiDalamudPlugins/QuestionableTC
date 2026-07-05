@@ -8,7 +8,9 @@ using Dalamud.Game;
 using Dalamud.Plugin.Services;
 using Dalamud.Utility;
 using Lumina.Excel.Sheets;
+using Questionable.Model;
 using Questionable.Model.Questing;
+using Quest = Lumina.Excel.Sheets.Quest;
 
 namespace Questionable.Data;
 
@@ -137,11 +139,14 @@ internal sealed class TerritoryData
         uint ContentFinderConditionId,
         string Name,
         uint TerritoryId,
-        ushort RequiredItemLevel)
+        ushort RequiredItemLevel,
+        byte ClassJobLevelSync,
+        EContentType? ContentType)
     {
         public ContentFinderConditionData(ContentFinderCondition condition, ClientLanguage clientLanguage)
             : this(condition.RowId, FixName(condition.Name.ToDalamudString().ToString(), clientLanguage),
-                condition.TerritoryType.RowId, condition.ItemLevelRequired)
+                condition.TerritoryType.RowId, condition.ItemLevelRequired, condition.ClassJobLevelSync,
+                (EContentType?)condition.ContentType.ValueNullable?.RowId)
         {
         }
     }

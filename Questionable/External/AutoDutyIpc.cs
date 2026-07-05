@@ -11,6 +11,12 @@ namespace Questionable.External;
 
 internal sealed class AutoDutyIpc
 {
+    public enum DutyMode
+    {
+        Support = 1,
+        UnsyncRegular = 2,
+    }
+
     private readonly Configuration _configuration;
     private readonly TerritoryData _territoryData;
     private readonly ILogger<AutoDutyIpc> _logger;
@@ -68,14 +74,20 @@ internal sealed class AutoDutyIpc
         }
     }
 
-    public void StartInstance(uint cfcId)
+    public void StartInstance(uint cfcId, DutyMode dutyMode = DutyMode.Support)
     {
         if (!_territoryData.TryGetContentFinderCondition(cfcId, out var cfcData))
             throw new TaskException(_LF("Unknown ContentFinderConditionId {0}", cfcId));
 
         try
         {
-            _setConfig.InvokeAction("dutyModeEnum", "Support");
+            _setConfig.InvokeAction("Unsynced", $"{dutyMode == DutyMode.UnsyncRegular}");
+            _setConfig.InvokeAction("dutyModeEnum", dutyMode switch
+            {
+                DutyMode.Support => "Support",
+                DutyMode.UnsyncRegular => "Regular",
+                _ => throw new System.ArgumentOutOfRangeException(nameof(dutyMode), dutyMode, null),
+            });
             _run.InvokeAction(cfcData.TerritoryId, 1, !_configuration.Advanced.DisableAutoDutyBareMode);
         }
         catch (IpcError e)

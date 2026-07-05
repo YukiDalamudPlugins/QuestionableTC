@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using LLib.Gear;
 using Questionable.Controller.Steps.Common;
 using Questionable.Controller.Steps.Shared;
@@ -16,7 +17,8 @@ namespace Questionable.Controller.Steps.Interactions;
 
 internal static class Duty
 {
-    internal sealed class Factory(AutoDutyIpc autoDutyIpc) : ITaskFactory
+    internal sealed class Factory(AutoDutyIpc autoDutyIpc, TerritoryData territoryData, Configuration configuration)
+        : ITaskFactory
     {
         public IEnumerable<ITask> CreateAllTasks(Quest quest, QuestSequence sequence, QuestStep step)
         {
@@ -27,7 +29,15 @@ internal static class Duty
 
             if (autoDutyIpc.IsConfiguredToRunContent(step.DutyOptions))
             {
-                yield return new StartAutoDutyTask(step.DutyOptions.ContentFinderConditionId);
+                AutoDutyIpc.DutyMode dutyMode = AutoDutyIpc.DutyMode.Support;
+                if (configuration.Duties.RunUnsynced &&
+                    territoryData.TryGetContentFinderCondition(step.DutyOptions.ContentFinderConditionId,
+                        out TerritoryData.ContentFinderConditionData? cfcData) &&
+                    cfcData.ContentType != EContentType.Trials &&
+                    IsOverleveledFor(cfcData))
+                    dutyMode = AutoDutyIpc.DutyMode.UnsyncRegular;
+
+                yield return new StartAutoDutyTask(step.DutyOptions.ContentFinderConditionId, dutyMode);
                 yield return new WaitAutoDutyTask(step.DutyOptions.ContentFinderConditionId);
                 yield return new WaitAtEnd.WaitNextStepOrSequence();
             }
@@ -37,17 +47,23 @@ internal static class Duty
                     yield return new OpenDutyFinderTask(step.DutyOptions.ContentFinderConditionId);
             }
         }
+
+        private static unsafe bool IsOverleveledFor(TerritoryData.ContentFinderConditionData cfcData) =>
+            PlayerState.Instance()->CurrentLevel - 20 >= cfcData.ClassJobLevelSync;
     }
 
-    internal sealed record StartAutoDutyTask(uint ContentFinderConditionId) : ITask
+    internal sealed record StartAutoDutyTask(
+        uint ContentFinderConditionId,
+        AutoDutyIpc.DutyMode DutyMode = AutoDutyIpc.DutyMode.Support) : ITask
     {
-        public override string ToString() => $"StartAutoDuty({ContentFinderConditionId})";
+        public override string ToString() => $"StartAutoDuty({ContentFinderConditionId}, {DutyMode})";
     }
 
     internal sealed class StartAutoDutyExecutor(
         GearStatsCalculator gearStatsCalculator,
         AutoDutyIpc autoDutyIpc,
         TerritoryData territoryData,
+        Configuration configuration,
         IClientState clientState,
         IChatGui chatGui,
         SendNotification.Executor sendNotificationExecutor) : TaskExecutor<StartAutoDutyTask>, IStoppableTaskExecutor
@@ -58,6 +74,7 @@ internal static class Duty
                     out var cfcData))
                 throw new TaskException("Failed to get territory ID for content finder condition");
 
+            AutoDutyIpc.DutyMode dutyMode = Task.DutyMode;
             unsafe
             {
                 InventoryManager* inventoryManager = InventoryManager.Instance();
@@ -78,9 +95,17 @@ internal static class Duty
 
                     return false;
                 }
+
+                if (configuration.Duties.RunUnsynced &&
+                    dutyMode is AutoDutyIpc.DutyMode.Support &&
+                    currentItemLevel - 200 >= cfcData.RequiredItemLevel &&
+                    cfcData.ContentType != EContentType.Trials)
+                {
+                    dutyMode = AutoDutyIpc.DutyMode.UnsyncRegular;
+                }
             }
 
-            autoDutyIpc.StartInstance(Task.ContentFinderConditionId);
+            autoDutyIpc.StartInstance(Task.ContentFinderConditionId, dutyMode);
             return true;
         }
 

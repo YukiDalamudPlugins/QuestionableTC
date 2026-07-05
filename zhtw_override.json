@@ -25,6 +25,8 @@
   "Reached or exceeded target level {0}.": "已達到或超過目標等級 {0}。",
   "Use aetheryte tickets where available": "可用時使用傳送網券",
   "Highlight NPCs related to the current quest sequence": "高亮顯示與目前任務序列相關的 NPC",
+  "Run content unsynced where safe": "在安全情況下以解除同步方式運行副本",
+  "Runs dungeons and raids unsynced when your level or item level is far above the duty (never trials).": "當你的等級或裝等遠高於副本時，以解除同步方式運行迷宮與大型任務（討伐殲滅戰除外）。",
   "Magical Ranged Role Quests": "遠程魔法職能任務",
   "Physical Ranged Role Quests": "遠程物理職能任務",
   "Available (Complete)": "可接取（已完成）",

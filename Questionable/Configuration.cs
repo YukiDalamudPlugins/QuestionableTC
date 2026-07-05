@@ -66,6 +66,7 @@ internal sealed class Configuration : IPluginConfiguration
     internal sealed class DutyConfiguration
     {
         public bool RunInstancedContentWithAutoDuty { get; set; }
+        public bool RunUnsynced { get; set; } = true;
         public HashSet<uint> WhitelistedDutyCfcIds { get; set; } = [];
         public HashSet<uint> BlacklistedDutyCfcIds { get; set; } = [];
     }

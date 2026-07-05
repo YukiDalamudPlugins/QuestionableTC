@@ -36,6 +36,7 @@ internal sealed class CombatController : IDisposable
     private readonly ICondition _condition;
     private readonly IClientState _clientState;
     private readonly QuestFunctions _questFunctions;
+    private readonly ChatFunctions _chatFunctions;
     private readonly ILogger<CombatController> _logger;
 
     private CurrentFight? _currentFight;
@@ -51,6 +52,7 @@ internal sealed class CombatController : IDisposable
         ICondition condition,
         IClientState clientState,
         QuestFunctions questFunctions,
+        ChatFunctions chatFunctions,
         ILogger<CombatController> logger)
     {
         _combatModules = combatModules.ToList();
@@ -60,6 +62,7 @@ internal sealed class CombatController : IDisposable
         _condition = condition;
         _clientState = clientState;
         _questFunctions = questFunctions;
+        _chatFunctions = chatFunctions;
         _logger = logger;
 
         _clientState.TerritoryChanged += TerritoryChanged;
@@ -306,7 +309,9 @@ internal sealed class CombatController : IDisposable
 
             var complexCombatData = _currentFight.Data.ComplexCombatDatas;
             var gameObjectStruct = (GameObject*)gameObject.Address;
-            if (gameObjectStruct->FateId != 0)
+            if (gameObjectStruct->FateId != 0 &&
+                gameObject.TargetObjectId != _clientState.LocalPlayer?.GameObjectId &&
+                _currentFight.Data.SpawnType != EEnemySpawnType.FateEnemies)
                 return (null, _L("FATE mob"));
 
             var ownPosition = _clientState.LocalPlayer?.Position ?? Vector3.Zero;
@@ -338,9 +343,15 @@ internal sealed class CombatController : IDisposable
             }
             else
             {
-                if ((!expectQuestMarker || gameObjectStruct->NamePlateIconId != 0) &&
+                if ((!expectQuestMarker || gameObjectStruct->NamePlateIconId != 0 ||
+                     _currentFight.Data.SpawnType == EEnemySpawnType.FateEnemies) &&
                     _currentFight.Data.KillEnemyDataIds.Contains(battleNpc.DataId))
+                {
+                    if (_currentFight.Data.SpawnType == EEnemySpawnType.FateEnemies &&
+                        PlayerState.Instance()->IsLevelSynced == 0)
+                        _chatFunctions.ExecuteCommand("/lsync");
                     return (90, "KED");
+                }
             }
 
             // enemies that we have aggro on

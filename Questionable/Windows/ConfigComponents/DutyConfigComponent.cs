@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -82,6 +82,20 @@ internal sealed class DutyConfigComponent : ConfigComponent
         ImGui.SameLine();
         ImGuiComponents.HelpMarker(
             _L("The combat module used for this is configured by AutoDuty, ignoring whichever selection you've made in Questionable's \"General\" configuration."));
+
+        using (ImRaii.Disabled(!runInstancedContentWithAutoDuty))
+        {
+            bool runUnsynced = Configuration.Duties.RunUnsynced;
+            if (ImGui.Checkbox(_L("Run content unsynced where safe"), ref runUnsynced))
+            {
+                Configuration.Duties.RunUnsynced = runUnsynced;
+                Save();
+            }
+
+            ImGui.SameLine();
+            ImGuiComponents.HelpMarker(
+                _L("Runs dungeons and raids unsynced when your level or item level is far above the duty (never trials)."));
+        }
 
         ImGui.Separator();
 

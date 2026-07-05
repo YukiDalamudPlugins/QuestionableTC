@@ -1907,6 +1907,13 @@
   </Entry>
   <Entry>
     <!-- Found in: Windows\ConfigComponents\DutyConfigComponent.cs -->
+    <Key>Run content unsynced where safe</Key>
+    <Value lang="ja-jp">安全な場合はシンク解除でコンテンツを実行</Value>
+    <Value lang="zh-cn">安全时以解除同步运行副本</Value>
+    <Value lang="zh-tw">在安全情況下以解除同步方式運行副本</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Windows\ConfigComponents\DutyConfigComponent.cs -->
     <Key>Run instanced content with AutoDuty and BossMod</Key>
     <Value lang="ja-jp">AutoDutyとBossModでインスタンスコンテンツを実行</Value>
     <Value lang="zh-cn">使用 AutoDuty 和 BossMod 运行副本内容</Value>
@@ -1918,6 +1925,11 @@
     <Value lang="ja-jp">BossModでクエストバトルを実行</Value>
     <Value lang="zh-cn">使用 BossMod 运行任务战斗</Value>
     <Value lang="zh-tw">使用 BossMod 執行任務戰鬥</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Windows\ConfigComponents\DutyConfigComponent.cs -->
+    <Key>Runs dungeons and raids unsynced when your level or item level is far above the duty (never trials).</Key>
+    <Value lang="zh-tw">當你的等級或裝等遠高於副本時，以解除同步方式運行迷宮與大型任務（討伐殲滅戰除外）。</Value>
   </Entry>
   <Entry>
     <!-- Found in: (dynamic) -->
