@@ -57,6 +57,13 @@
     <Value lang="zh-tw">'已支援'是 Questionable 可執行的任務列表</Value>
   </Entry>
   <Entry>
+    <!-- Found in: Windows\ConfigComponents\StopConditionComponent.cs -->
+    <Key>(Current: {0})</Key>
+    <Value lang="ja-jp">（現在: {0}）</Value>
+    <Value lang="zh-cn">（当前：{0}）</Value>
+    <Value lang="zh-tw">（目前：{0}）</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\QuestComponents\ActiveQuestComponent.cs -->
     <Key>(Next quest in story line not accepted)</Key>
     <Value lang="ja-jp">（ストーリーラインの次のクエストが未受注）</Value>
@@ -134,6 +141,11 @@
     <Value lang="zh-tw">重生之境</Value>
   </Entry>
   <Entry>
+    <!-- Found in: Controller\QuestController.cs -->
+    <Key>Accepted quest '{0}', which is configured as a stopping point.</Key>
+    <Value lang="zh-tw">已接受設為停止點的任務「{0}」。</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\QuestSelectionWindow.cs -->
     <Key>Actions</Key>
     <Value lang="ja-jp">アクション</Value>
@@ -148,7 +160,7 @@
     <Value lang="zh-tw">進行中</Value>
   </Entry>
   <Entry>
-    <!-- Found in: Windows\PriorityWindow.cs -->
+    <!-- Found in: Windows\PriorityWindow.cs, Windows\Utils\QuestSelector.cs -->
     <Key>Add Quest...</Key>
     <Value lang="ja-jp">クエストを追加...</Value>
     <Value lang="zh-cn">添加任务...</Value>
@@ -402,7 +414,7 @@
     <Value lang="zh-tw">職業/特職任務</Value>
   </Entry>
   <Entry>
-    <!-- Found in: Windows\PriorityWindow.cs -->
+    <!-- Found in: Windows\ConfigComponents\StopConditionComponent.cs, Windows\PriorityWindow.cs -->
     <Key>Clear</Key>
     <Value lang="zh-tw">清除</Value>
   </Entry>
@@ -449,6 +461,13 @@
     <Value lang="zh-tw">已收集</Value>
   </Entry>
   <Entry>
+    <!-- Found in: Windows\ConfigComponents\StopConditionComponent.cs -->
+    <Key>Command</Key>
+    <Value lang="ja-jp">コマンド</Value>
+    <Value lang="zh-cn">命令</Value>
+    <Value lang="zh-tw">指令</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\UiUtils.cs -->
     <Key>Complete</Key>
     <Value lang="ja-jp">完了</Value>
@@ -461,6 +480,11 @@
     <Value lang="ja-jp">完了済み</Value>
     <Value lang="zh-cn">已完成</Value>
     <Value lang="zh-tw">已完成</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Controller\QuestController.cs -->
+    <Key>Completed quest '{0}', which is configured as a stopping point.</Key>
+    <Value lang="zh-tw">已完成設為停止點的任務「{0}」。</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\ConfigWindow.cs -->
@@ -693,6 +717,13 @@
     <Value lang="zh-tw">啟用除錯懸浮窗</Value>
   </Entry>
   <Entry>
+    <!-- Found in: Windows\ConfigComponents\StopConditionComponent.cs -->
+    <Key>Enable level stop condition</Key>
+    <Value lang="ja-jp">レベル停止条件を有効にする</Value>
+    <Value lang="zh-cn">启用等级停止条件</Value>
+    <Value lang="zh-tw">啟用等級停止條件</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\ConfigComponents\NotificationConfigComponent.cs -->
     <Key>Enable notifications when manual interaction is required</Key>
     <Value lang="ja-jp">手動操作が必要なときに通知を有効にする</Value>
@@ -791,7 +822,7 @@
     <Value lang="zh-tw">時尚配飾</Value>
   </Entry>
   <Entry>
-    <!-- Found in: Windows\PriorityWindow.cs -->
+    <!-- Found in: Windows\PriorityWindow.cs, Windows\Utils\QuestSelector.cs -->
     <Key>Filter...</Key>
     <Value lang="ja-jp">フィルター...</Value>
     <Value lang="zh-cn">筛选...</Value>
@@ -908,7 +939,7 @@
     <Value lang="zh-tw">在所有副本中隱藏任務視窗</Value>
   </Entry>
   <Entry>
-    <!-- Found in: Windows\ConfigComponents\DutyConfigComponent.cs, Windows\ConfigComponents\SinglePlayerDutyConfigComponent.cs -->
+    <!-- Found in: Windows\ConfigComponents\DutyConfigComponent.cs, Windows\ConfigComponents\SinglePlayerDutyConfigComponent.cs, Windows\ConfigComponents\StopConditionComponent.cs -->
     <Key>Hold CTRL to enable this button.</Key>
     <Value lang="ja-jp">このボタンを有効にするにはCTRLを押したままにしてください。</Value>
     <Value lang="zh-cn">按住 CTRL 键以启用此按钮。</Value>
@@ -1760,6 +1791,11 @@
     <Value lang="zh-tw">優先執行的任務：</Value>
   </Entry>
   <Entry>
+    <!-- Found in: Controller\QuestController.cs -->
+    <Key>Reached or exceeded target level {0}.</Key>
+    <Value lang="zh-tw">已達到或超過目標等級 {0}。</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: (dynamic) -->
     <Key>Reaper</Key>
     <Value lang="ja-jp">リーパー</Value>
@@ -1854,6 +1890,13 @@
     <!-- Found in: Windows\ConfigComponents\SinglePlayerDutyConfigComponent.cs -->
     <Key>Role Quests</Key>
     <Value lang="zh-tw">職能任務</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Windows\ConfigComponents\StopConditionComponent.cs -->
+    <Key>Run command when Questionable finishes automatic questing</Key>
+    <Value lang="ja-jp">Questionableの自動クエストが完了した際にコマンドを実行</Value>
+    <Value lang="zh-cn">Questionable 自动任务完成后执行命令</Value>
+    <Value lang="zh-tw">Questionable 結束自動任務時執行指令</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\ConfigComponents\DutyConfigComponent.cs -->
@@ -2106,11 +2149,46 @@
     <Value lang="zh-tw">重試 {0} 次後仍然卡住，停止執行。</Value>
   </Entry>
   <Entry>
+    <!-- Found in: Windows\ConfigComponents\StopConditionComponent.cs -->
+    <Key>Stop</Key>
+    <Value lang="ja-jp">停止</Value>
+    <Value lang="zh-cn">停止</Value>
+    <Value lang="zh-tw">停止</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Windows\ConfigComponents\StopConditionComponent.cs -->
+    <Key>Stop Questionable when any of the conditions below are met</Key>
+    <Value lang="ja-jp">以下の条件のいずれかが満たされた場合にQuestionableを停止</Value>
+    <Value lang="zh-cn">当满足以下任一条件时停止 Questionable</Value>
+    <Value lang="zh-tw">符合以下任一條件時停止 Questionable</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Windows\ConfigComponents\StopConditionComponent.cs -->
+    <Key>Stop at level</Key>
+    <Value lang="ja-jp">レベルで停止</Value>
+    <Value lang="zh-cn">停止等级</Value>
+    <Value lang="zh-tw">停止等級</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Controller\CommandHandler.cs -->
     <Key>Stop command</Key>
     <Value lang="ja-jp">停止コマンド</Value>
     <Value lang="zh-cn">停止命令</Value>
     <Value lang="zh-tw">停止命令</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Windows\ConfigComponents\StopConditionComponent.cs -->
+    <Key>Stop when accepting any of the quests selected below:</Key>
+    <Value lang="ja-jp">以下で選択したクエストのいずれかを受注したら停止：</Value>
+    <Value lang="zh-cn">接受以下任一任务时停止：</Value>
+    <Value lang="zh-tw">接受以下所選任務之一時停止：</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Windows\ConfigComponents\StopConditionComponent.cs -->
+    <Key>Stop when completing any of the quests selected below:</Key>
+    <Value lang="ja-jp">以下で選択したクエストのいずれかを完了したら停止：</Value>
+    <Value lang="zh-cn">完成以下任一任务时停止：</Value>
+    <Value lang="zh-tw">完成以下所選任務之一時停止：</Value>
   </Entry>
   <Entry>
     <!-- Found in: (dynamic) -->

@@ -310,6 +310,7 @@ public sealed class QuestionablePlugin : IDalamudPlugin
 
         serviceCollection.AddSingleton<GeneralConfigComponent>();
         serviceCollection.AddSingleton<PluginConfigComponent>();
+        serviceCollection.AddSingleton<StopConditionComponent>();
         serviceCollection.AddSingleton<DutyConfigComponent>();
         serviceCollection.AddSingleton<SinglePlayerDutyConfigComponent>();
         serviceCollection.AddSingleton<NotificationConfigComponent>();

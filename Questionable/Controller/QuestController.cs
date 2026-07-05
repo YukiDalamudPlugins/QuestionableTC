@@ -8,6 +8,7 @@ using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
+using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using LLib.GameUI;
 using Microsoft.Extensions.Logging;
@@ -46,6 +47,7 @@ internal sealed class QuestController : MiniTaskController<QuestController>
     private readonly QuestRegistry _questRegistry;
     private readonly IKeyState _keyState;
     private readonly IChatGui _chatGui;
+    private readonly ICommandManager _commandManager;
     private readonly ICondition _condition;
     private readonly IToastGui _toastGui;
     private readonly Configuration _configuration;
@@ -112,6 +114,7 @@ internal sealed class QuestController : MiniTaskController<QuestController>
         QuestRegistry questRegistry,
         IKeyState keyState,
         IChatGui chatGui,
+        ICommandManager commandManager,
         ICondition condition,
         IToastGui toastGui,
         Configuration configuration,
@@ -132,6 +135,7 @@ internal sealed class QuestController : MiniTaskController<QuestController>
         _questRegistry = questRegistry;
         _keyState = keyState;
         _chatGui = chatGui;
+        _commandManager = commandManager;
         _condition = condition;
         _toastGui = toastGui;
         _configuration = configuration;
@@ -276,6 +280,25 @@ internal sealed class QuestController : MiniTaskController<QuestController>
             if (!_taskQueue.AllTasksComplete)
             {
                 StopAllDueToConditionFailed("ESC pressed");
+            }
+        }
+
+        // level stop condition: stops immediately instead of waiting for quest completion
+        if (_configuration.Stop.Enabled && _configuration.Stop.LevelToStopAfter && IsRunning)
+        {
+            unsafe
+            {
+                short currentLevel = PlayerState.Instance()->CurrentLevel;
+                if (currentLevel >= _configuration.Stop.TargetLevel)
+                {
+                    _logger.LogInformation(
+                        "Reached level stop condition (level: {CurrentLevel}, target: {TargetLevel})",
+                        currentLevel, _configuration.Stop.TargetLevel);
+                    _chatGui.Print(_LF("Reached or exceeded target level {0}.", _configuration.Stop.TargetLevel),
+                        CommandHandler.MessageTag, CommandHandler.TagColor);
+                    Stop($"Level stop condition reached [{currentLevel}]");
+                    return;
+                }
             }
         }
 
@@ -429,6 +452,9 @@ internal sealed class QuestController : MiniTaskController<QuestController>
                 {
                     _startedQuest = _pendingQuest;
                     _pendingQuest = null;
+                    TryStopOnQuestAccepted(_startedQuest.Quest.Id);
+                    if (AutomationType == EAutomationType.Manual)
+                        return;
                     CheckNextTasks("Pending quest accepted");
                 }
             }
@@ -444,8 +470,8 @@ internal sealed class QuestController : MiniTaskController<QuestController>
 
                 if (!canUseNextQuest)
                 {
-                    _logger.LogInformation("Next quest {QuestId} accepted or completed",
-                        _nextQuest.Quest.Id);
+                    ElementId nextQuestId = _nextQuest.Quest.Id;
+                    _logger.LogInformation("Next quest {QuestId} accepted or completed", nextQuestId);
 
                     if (AutomationType == EAutomationType.SingleQuestA)
                     {
@@ -455,7 +481,32 @@ internal sealed class QuestController : MiniTaskController<QuestController>
 
                     _logger.LogDebug("Started: {StartedQuest}", _startedQuest?.Quest.Id);
                     _nextQuest = null;
+                    TryStopOnQuestAccepted(nextQuestId);
+                    if (AutomationType == EAutomationType.Manual)
+                        return;
                 }
+            }
+
+            // Stop checks run before the NextQuest/priority cascade — otherwise a queued NextQuest
+            // (e.g. an MSQ chain or priority list pick) is started before the user's stop condition
+            // is ever consulted. Checks both IsQuestComplete and !IsQuestAccepted because repeatable
+            // quests return true for Complete while still being active.
+            if (_startedQuest != null &&
+                _configuration.Stop.Enabled &&
+                _configuration.Stop.QuestsToStopAfter.Contains(_startedQuest.Quest.Id) &&
+                _questFunctions.IsQuestComplete(_startedQuest.Quest.Id) &&
+                !_questFunctions.IsQuestAccepted(_startedQuest.Quest.Id))
+            {
+                ElementId questId = _startedQuest.Quest.Id;
+                _logger.LogInformation("Reached stopping point (quest: {QuestId})", questId);
+                _chatGui.Print(
+                    _LF("Completed quest '{0}', which is configured as a stopping point.",
+                        _startedQuest.Quest.Info.Name),
+                    CommandHandler.MessageTag, CommandHandler.TagColor);
+                _startedQuest = null;
+                Stop($"Stopping point [{questId}] reached");
+                _configuration.Stop.QuestsToStopAfter.Remove(questId);
+                return;
             }
 
             QuestProgress? questToRun;
@@ -535,6 +586,11 @@ internal sealed class QuestController : MiniTaskController<QuestController>
                     if (_questRegistry.TryGetQuest(currentQuestId, out var quest))
                     {
                         _logger.LogInformation("New quest: {QuestName}", quest.Info.Name);
+
+                        TryStopOnQuestAccepted(quest.Id);
+                        if (AutomationType == EAutomationType.Manual)
+                            return;
+
                         _startedQuest = new QuestProgress(quest, currentSequence);
 
                         if (_clientState.LocalPlayer != null &&
@@ -701,6 +757,30 @@ internal sealed class QuestController : MiniTaskController<QuestController>
         _gatheringController.Stop("ClearTasksInternal");
     }
 
+    /// <summary>
+    ///     Stops automation when a quest is accepted, if configured as an accept stopping point.
+    /// </summary>
+    public void TryStopOnQuestAccepted(ElementId questId)
+    {
+        if (AutomationType == EAutomationType.Manual)
+            return;
+
+        if (!_configuration.Stop.Enabled || !_configuration.Stop.QuestsToStopWhenAccepted.Contains(questId))
+            return;
+
+        _logger.LogInformation("Reached accept stopping point (quest: {QuestId})", questId);
+        if (_questRegistry.TryGetQuest(questId, out Quest? quest))
+        {
+            _chatGui.Print(
+                _LF("Accepted quest '{0}', which is configured as a stopping point.", quest.Info.Name),
+                CommandHandler.MessageTag, CommandHandler.TagColor);
+        }
+
+        _startedQuest = null;
+        Stop($"Accept stopping point [{questId}] reached");
+        _configuration.Stop.QuestsToStopWhenAccepted.Remove(questId);
+    }
+
     public override void Stop(string label)
     {
         _handlingDeath = false;
@@ -714,6 +794,13 @@ internal sealed class QuestController : MiniTaskController<QuestController>
         if (IsRunning || AutomationType != EAutomationType.Manual)
         {
             ClearTasksInternal();
+            if (_configuration.Stop is { RunCommandAfterStop: true } stop &&
+                stop.CommandAfterStop.StartsWith('/'))
+            {
+                _logger.LogInformation("Running command after stop: {Command}", stop.CommandAfterStop);
+                _commandManager.ProcessCommand(stop.CommandAfterStop);
+            }
+
             _logger.LogInformation("Stopping automatic questing");
             AutomationType = EAutomationType.Manual;
             _nextQuest = null;
