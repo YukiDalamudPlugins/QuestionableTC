@@ -970,18 +970,10 @@ internal sealed class QuestController : MiniTaskController<QuestController>
             return false;
         }
 
-        List<Quest>? prerequisites = _questFunctions.GetIncompletePrerequisites(targetQuestId);
-        if (prerequisites == null)
-        {
-            _logger.LogInformation(
-                "Quest {QuestId} is locked and its prerequisite chain can't be done automatically (missing path or disabled)",
-                targetQuestId);
-            return false;
-        }
-
+        List<Quest> prerequisites = _questFunctions.GetIncompletePrerequisites(targetQuestId);
         if (prerequisites.Count == 0)
         {
-            _logger.LogInformation("Quest {QuestId} is locked, but no incomplete prerequisite quests were found",
+            _logger.LogInformation("Quest {QuestId} is locked, but no doable incomplete prerequisite quests were found",
                 targetQuestId);
             return false;
         }

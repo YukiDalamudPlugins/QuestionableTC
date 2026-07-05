@@ -43,11 +43,8 @@ internal sealed class QuestJournalUtils
                 quest != null && !_questFunctions.IsQuestAcceptedOrComplete(questInfo.QuestId)))
         {
             var prerequisites = _questFunctions.GetIncompletePrerequisites(questInfo.QuestId);
-            if (prerequisites != null)
-            {
-                foreach (var prerequisite in prerequisites)
-                    _questController.AddQuestPriority(prerequisite.Id);
-            }
+            foreach (var prerequisite in prerequisites)
+                _questController.AddQuestPriority(prerequisite.Id);
 
             _questController.AddQuestPriority(questInfo.QuestId);
         }

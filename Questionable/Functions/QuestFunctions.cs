@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Dalamud.Memory;
 using Dalamud.Plugin.Services;
+using Microsoft.Extensions.Logging;
 using FFXIVClientStructs.FFXIV.Application.Network.WorkDefinitions;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
@@ -36,6 +37,7 @@ internal sealed unsafe class QuestFunctions
     private readonly IClientState _clientState;
     private readonly IGameGui _gameGui;
     private readonly IAetheryteList _aetheryteList;
+    private readonly ILogger<QuestFunctions> _logger;
 
     public QuestFunctions(
         QuestRegistry questRegistry,
@@ -47,7 +49,8 @@ internal sealed unsafe class QuestFunctions
         IDataManager dataManager,
         IClientState clientState,
         IGameGui gameGui,
-        IAetheryteList aetheryteList)
+        IAetheryteList aetheryteList,
+        ILogger<QuestFunctions> logger)
     {
         _questRegistry = questRegistry;
         _questData = questData;
@@ -59,6 +62,7 @@ internal sealed unsafe class QuestFunctions
         _clientState = clientState;
         _gameGui = gameGui;
         _aetheryteList = aetheryteList;
+        _logger = logger;
     }
 
     public QuestReference GetCurrentQuest(bool allowNewMsq = true)
@@ -860,39 +864,48 @@ internal sealed unsafe class QuestFunctions
     /// <summary>
     ///     Returns the incomplete prerequisite quests of <paramref name="questId"/> in dependency order
     ///     (quests with fewer own prerequisites first), recursing up to 20 levels and stopping at MSQ
-    ///     quests. Returns null if any quest in the chain has no quest path or is disabled, i.e. the
-    ///     chain can't be completed automatically.
+    ///     quests. This is best-effort: prerequisite quests without a quest path or that are disabled
+    ///     are skipped (and logged) rather than aborting the whole chain, so the parts we can do still
+    ///     get scheduled.
     /// </summary>
-    public List<Quest>? GetIncompletePrerequisites(ElementId questId)
+    public List<Quest> GetIncompletePrerequisites(ElementId questId)
     {
         Dictionary<ElementId, Quest> collected = [];
-        if (!CollectIncompletePrerequisites(questId, collected, depth: 0))
-            return null;
+        List<ElementId> missing = [];
+        CollectIncompletePrerequisites(questId, collected, missing, depth: 0);
+
+        if (missing.Count > 0)
+            _logger.LogWarning(
+                "Prerequisite chain for {QuestId} has {Count} quest(s) without a usable path: {Missing}",
+                questId, missing.Count, string.Join(", ", missing));
 
         return collected.Values
             .OrderBy(x => ((QuestInfo)_questData.GetQuestInfo(x.Id)).PreviousQuests.Count)
             .ToList();
     }
 
-    private bool CollectIncompletePrerequisites(ElementId questId, Dictionary<ElementId, Quest> collected, int depth)
+    private void CollectIncompletePrerequisites(ElementId questId, Dictionary<ElementId, Quest> collected,
+        List<ElementId> missing, int depth)
     {
         if (depth > 20)
-            return false;
+            return;
 
         if (!_questData.TryGetQuestInfo(questId, out IQuestInfo? iQuestInfo) || iQuestInfo is not QuestInfo questInfo)
-            return true;
+            return;
 
         IEnumerable<PreviousQuestInfo> required;
         if (questInfo.PreviousQuestJoin == EQuestJoin.AtLeastOne && questInfo.PreviousQuests.Count > 0)
         {
             if (questInfo.PreviousQuests.Any(x => HasEnoughProgressOnPreviousQuest(x)))
-                return true;
+                return;
 
-            // none completed: pick the first prerequisite that is itself obtainable
+            // none completed: prefer a prerequisite that has a usable path, else the first obtainable one
             PreviousQuestInfo? candidate = questInfo.PreviousQuests
-                .FirstOrDefault(x => !IsQuestUnobtainable(x.QuestId));
+                .FirstOrDefault(x => !IsQuestUnobtainable(x.QuestId) &&
+                                     _questRegistry.TryGetQuest(x.QuestId, out Quest? q) && !q.Root.Disabled);
+            candidate ??= questInfo.PreviousQuests.FirstOrDefault(x => !IsQuestUnobtainable(x.QuestId));
             if (candidate == null)
-                return false;
+                return;
 
             required = [candidate];
         }
@@ -909,17 +922,20 @@ internal sealed unsafe class QuestFunctions
                 continue;
 
             if (IsQuestUnobtainable(previousQuest.QuestId))
-                return false;
+                continue;
+
+            // resolve deeper prerequisites first (dependency order), even if this one has no path itself
+            CollectIncompletePrerequisites(previousQuest.QuestId, collected, missing, depth + 1);
 
             if (!_questRegistry.TryGetQuest(previousQuest.QuestId, out Quest? quest) || quest.Root.Disabled)
-                return false;
+            {
+                if (!missing.Contains(previousQuest.QuestId))
+                    missing.Add(previousQuest.QuestId);
+                continue;
+            }
 
-            collected[previousQuest.QuestId] = quest;
-            if (!CollectIncompletePrerequisites(previousQuest.QuestId, collected, depth + 1))
-                return false;
+            collected.TryAdd(previousQuest.QuestId, quest);
         }
-
-        return true;
     }
 }
 

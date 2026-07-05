@@ -153,17 +153,25 @@ internal sealed class PriorityWindow : LWindow
     /// </summary>
     private void AddQuestWithPrerequisites(Quest quest)
     {
-        if (_questFunctions.IsQuestLocked(quest.Id))
+        bool locked = _questFunctions.IsQuestLocked(quest.Id);
+        if (locked)
         {
-            List<Quest>? prerequisites = _questFunctions.GetIncompletePrerequisites(quest.Id);
-            if (prerequisites is { Count: > 0 })
+            List<Quest> prerequisites = _questFunctions.GetIncompletePrerequisites(quest.Id);
+            foreach (Quest prerequisite in prerequisites)
             {
-                foreach (Quest prerequisite in prerequisites)
-                {
-                    if (_questController.ManualPriorityQuests.All(x => x.Id != prerequisite.Id))
-                        _questController.ManualPriorityQuests.Add(prerequisite);
-                }
+                if (_questController.ManualPriorityQuests.All(x => x.Id != prerequisite.Id))
+                    _questController.ManualPriorityQuests.Add(prerequisite);
             }
+
+            if (prerequisites.Count > 0)
+                _chatGui.Print(
+                    _LF("Added {0} prerequisite quest(s) for '{1}'.", prerequisites.Count, quest.Info.Name),
+                    CommandHandler.MessageTag, CommandHandler.TagColor);
+            else
+                _chatGui.Print(
+                    _LF("'{0}' is locked, but no doable prerequisite quests were found — add them manually.",
+                        quest.Info.Name),
+                    CommandHandler.MessageTag, CommandHandler.TagColor);
         }
 
         if (_questController.ManualPriorityQuests.All(x => x.Id != quest.Id))
