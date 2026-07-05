@@ -17,18 +17,18 @@ namespace Questionable.Windows.ConfigComponents;
 
 internal sealed class GeneralConfigComponent : ConfigComponent
 {
-    private static readonly List<(uint Id, string Name)> DefaultMounts = [(0, "Mount Roulette")];
-    private static readonly List<(EClassJob ClassJob, string Name)> DefaultClassJobs = [(EClassJob.Adventurer, "Auto (highest level/item level)")];
+    private static readonly List<(uint Id, string Name)> DefaultMounts = [(0, _L("Mount Roulette"))];
+    private static readonly List<(EClassJob ClassJob, string Name)> DefaultClassJobs = [(EClassJob.Adventurer, _L("Auto (highest level/item level)"))];
 
     private readonly QuestRegistry _questRegistry;
     private readonly TerritoryData _territoryData;
 
     private readonly uint[] _mountIds;
     private readonly string[] _mountNames;
-    private readonly string[] _combatModuleNames = ["None", "Boss Mod (VBM)", "Wrath Combo", "Rotation Solver Reborn"];
+    private readonly string[] _combatModuleNames = [_L("None"), "Boss Mod (VBM)", "Wrath Combo", "Rotation Solver Reborn"];
 
     private readonly string[] _grandCompanyNames =
-        ["None (manually pick quest)", "Maelstrom", "Twin Adder", "Immortal Flames"];
+        [_L("None (manually pick quest)"), _L("Maelstrom"), _L("Twin Adder"), _L("Immortal Flames")];
 
     private readonly EClassJob[] _classJobIds;
     private readonly string[] _classJobNames;
@@ -62,7 +62,7 @@ internal sealed class GeneralConfigComponent : ConfigComponent
             .OrderBy(x => sortedClassJobs.IndexOf(x))
             .ToList();
         _classJobIds = DefaultClassJobs.Select(x => x.ClassJob).Concat(classJobs).ToArray();
-        _classJobNames = DefaultClassJobs.Select(x => x.Name).Concat(classJobs.Select(x => x.ToFriendlyString())).ToArray();
+        _classJobNames = DefaultClassJobs.Select(x => x.Name).Concat(classJobs.Select(x => _L(x.ToFriendlyString()))).ToArray();
     }
 
     private static readonly string[] LanguageCodes = ["en", "ja-jp", "zh-cn", "zh-tw"];

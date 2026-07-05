@@ -115,7 +115,7 @@ internal sealed class DutyConfigComponent : ConfigComponent
 
         foreach (EExpansionVersion expansion in Enum.GetValues<EExpansionVersion>())
         {
-            if (ImGui.CollapsingHeader(expansion.ToFriendlyString()))
+            if (ImGui.CollapsingHeader($"{_L(expansion.ToFriendlyString())}###Expansion{expansion}"))
             {
                 using var table = ImRaii.Table($"Duties{expansion}", 2, ImGuiTableFlags.SizingFixedFit);
                 if (table)

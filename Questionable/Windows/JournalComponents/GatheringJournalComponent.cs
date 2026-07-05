@@ -177,7 +177,8 @@ internal sealed class GatheringJournalComponent
         ImGui.TableNextRow();
         ImGui.TableNextColumn();
 
-        bool open = ImGui.TreeNodeEx(expansion.Expansion.ExpansionVersion.ToFriendlyString(),
+        bool open = ImGui.TreeNodeEx(
+            $"{_L(expansion.Expansion.ExpansionVersion.ToFriendlyString())}###GatherExpansion{expansion.Expansion.ExpansionVersion}",
             ImGuiTreeNodeFlags.SpanFullWidth);
 
         ImGui.TableNextColumn();

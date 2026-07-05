@@ -127,6 +127,13 @@
     <Value lang="zh-tw">?</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>A Realm Reborn</Key>
+    <Value lang="ja-jp">新生エオルゼア</Value>
+    <Value lang="zh-cn">重生之境</Value>
+    <Value lang="zh-tw">重生之境</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\QuestSelectionWindow.cs -->
     <Key>Actions</Key>
     <Value lang="ja-jp">アクション</Value>
@@ -169,6 +176,27 @@
     <Value lang="zh-tw">友好部族</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Arcanist</Key>
+    <Value lang="ja-jp">巴術士</Value>
+    <Value lang="zh-cn">秘术师</Value>
+    <Value lang="zh-tw">秘術師</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Archer</Key>
+    <Value lang="ja-jp">弓術士</Value>
+    <Value lang="zh-cn">弓箭手</Value>
+    <Value lang="zh-tw">弓箭手</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Astrologian</Key>
+    <Value lang="ja-jp">占星術師</Value>
+    <Value lang="zh-cn">占星术士</Value>
+    <Value lang="zh-tw">占星術士</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\QuestComponents\QuestTooltipComponent.cs -->
     <Key>Author: {0}</Key>
     <Value lang="ja-jp">作成者: {0}</Value>
@@ -181,6 +209,13 @@
     <Value lang="ja-jp">作成者: {0}</Value>
     <Value lang="zh-cn">作者：{0}</Value>
     <Value lang="zh-tw">作者：{0}</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs -->
+    <Key>Auto (highest level/item level)</Key>
+    <Value lang="ja-jp">自動（最高レベル/アイテムレベル）</Value>
+    <Value lang="zh-cn">自动（最高等级/品级）</Value>
+    <Value lang="zh-tw">自動（最高等級/品級）</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\ConfigComponents\DebugConfigComponent.cs -->
@@ -251,6 +286,20 @@
     <Value lang="zh-tw">可接受的優先任務：</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Bard</Key>
+    <Value lang="ja-jp">吟遊詩人</Value>
+    <Value lang="zh-cn">吟游诗人</Value>
+    <Value lang="zh-tw">吟遊詩人</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Black Mage</Key>
+    <Value lang="ja-jp">黒魔道士</Value>
+    <Value lang="zh-cn">黑魔法师</Value>
+    <Value lang="zh-tw">黑魔法師</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\QuestComponents\QuestTooltipComponent.cs -->
     <Key>Blocked by (if all completed):</Key>
     <Value lang="ja-jp">ブロック（すべて完了時）：</Value>
@@ -270,6 +319,13 @@
     <Value lang="ja-jp">ブロック（完了時）：</Value>
     <Value lang="zh-cn">被阻止（已完成）：</Value>
     <Value lang="zh-tw">被阻止（已完成）：</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Blue Mage</Key>
+    <Value lang="ja-jp">青魔道士</Value>
+    <Value lang="zh-cn">青魔法师</Value>
+    <Value lang="zh-tw">青魔法師</Value>
   </Entry>
   <Entry>
     <!-- Found in: Controller\CombatController.cs -->
@@ -399,6 +455,13 @@
     <Value lang="zh-tw">設定 - Questionable</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Conjurer</Key>
+    <Value lang="ja-jp">幻術士</Value>
+    <Value lang="zh-cn">幻术师</Value>
+    <Value lang="zh-tw">幻術師</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\ConfigComponents\DutyConfigComponent.cs, Windows\ConfigComponents\SinglePlayerDutyConfigComponent.cs -->
     <Key>ContentFinderConditionId: {0}</Key>
     <Value lang="ja-jp">ContentFinderConditionId: {0}</Value>
@@ -451,6 +514,27 @@
     <!-- Found in: Windows\QuestComponents\CreationUtilsComponent.cs -->
     <Key>Current Quest: {0} → {1}</Key>
     <Value lang="zh-tw">目前任務：{0} → {1}</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Dancer</Key>
+    <Value lang="ja-jp">踊り子</Value>
+    <Value lang="zh-cn">舞者</Value>
+    <Value lang="zh-tw">舞者</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Dark Knight</Key>
+    <Value lang="ja-jp">暗黒騎士</Value>
+    <Value lang="zh-cn">暗黑骑士</Value>
+    <Value lang="zh-tw">暗黑騎士</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Dawntrail</Key>
+    <Value lang="ja-jp">黄金のレガシー</Value>
+    <Value lang="zh-cn">金曦之遗辉</Value>
+    <Value lang="zh-tw">金曦之遺輝</Value>
   </Entry>
   <Entry>
     <!-- Found in: Controller\CombatController.cs -->
@@ -533,6 +617,13 @@
     <Value lang="zh-tw">不接取職業/特職/職能任務</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Dragoon</Key>
+    <Value lang="ja-jp">竜騎士</Value>
+    <Value lang="zh-cn">龙骑士</Value>
+    <Value lang="zh-tw">龍騎士</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\ConfigComponents\DebugConfigComponent.cs -->
     <Key>Draw additional status information</Key>
     <Value lang="ja-jp">追加ステータス情報を表示</Value>
@@ -613,6 +704,13 @@
     <Value lang="ja-jp">ここでオプションを有効にすると予期しない動作が発生する場合があります。自己責任でご使用ください。</Value>
     <Value lang="zh-cn">启用此处选项可能导致意外行为。使用风险自负。</Value>
     <Value lang="zh-tw">啟用此處選項可能導致意外行為。使用風險自負。</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Endwalker</Key>
+    <Value lang="ja-jp">暁月のフィナーレ</Value>
+    <Value lang="zh-cn">晓月之终途</Value>
+    <Value lang="zh-tw">曉月之終途</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs -->
@@ -725,6 +823,13 @@
     <Value lang="zh-tw">通用職能任務</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Gladiator</Key>
+    <Value lang="ja-jp">剣術士</Value>
+    <Value lang="zh-cn">剑术师</Value>
+    <Value lang="zh-tw">劍術師</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\QuestComponents\QuestTooltipComponent.cs -->
     <Key>Grand Company: {0}</Key>
     <Value lang="ja-jp">グランドカンパニー: {0}</Value>
@@ -737,6 +842,13 @@
     <Value lang="ja-jp">グリダニア</Value>
     <Value lang="zh-cn">格里达尼亚</Value>
     <Value lang="zh-tw">格里達尼亞</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Gunbreaker</Key>
+    <Value lang="ja-jp">ガンブレイカー</Value>
+    <Value lang="zh-cn">绝枪战士</Value>
+    <Value lang="zh-tw">絕槍戰士</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\QuestComponents\ARealmRebornComponent.cs -->
@@ -758,6 +870,13 @@
     <Value lang="ja-jp">ヒーラーロールクエスト</Value>
     <Value lang="zh-cn">治疗职能任务</Value>
     <Value lang="zh-tw">治療職能任務</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Heavensward</Key>
+    <Value lang="ja-jp">蒼天のイシュガルド</Value>
+    <Value lang="zh-cn">苍穹之禁城</Value>
+    <Value lang="zh-tw">蒼穹之禁城</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\JournalComponents\QuestJournalUtils.cs -->
@@ -824,7 +943,7 @@
     <Value lang="zh-tw">如果你有進行中的主線任務，Questionable 通常會嘗試執行：</Value>
   </Entry>
   <Entry>
-    <!-- Found in: Windows\QuestComponents\QuestTooltipComponent.cs -->
+    <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs, Windows\QuestComponents\QuestTooltipComponent.cs -->
     <Key>Immortal Flames</Key>
     <Value lang="ja-jp">不滅隊</Value>
     <Value lang="zh-cn">恒辉队</Value>
@@ -929,6 +1048,13 @@
     <Value lang="zh-tw">日誌進度</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Lancer</Key>
+    <Value lang="ja-jp">槍術士</Value>
+    <Value lang="zh-cn">枪术师</Value>
+    <Value lang="zh-tw">槍術師</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs -->
     <Key>Language</Key>
     <Value lang="ja-jp">言語</Value>
@@ -985,7 +1111,14 @@
     <Value lang="zh-tw">主線任務（如果可用，除非在日誌中標記為"忽略"）</Value>
   </Entry>
   <Entry>
-    <!-- Found in: Windows\QuestComponents\QuestTooltipComponent.cs -->
+    <!-- Found in: (dynamic) -->
+    <Key>Machinist</Key>
+    <Value lang="ja-jp">機工士</Value>
+    <Value lang="zh-cn">机工士</Value>
+    <Value lang="zh-tw">機工士</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs, Windows\QuestComponents\QuestTooltipComponent.cs -->
     <Key>Maelstrom</Key>
     <Value lang="ja-jp">黒渦団</Value>
     <Value lang="zh-cn">黑涡团</Value>
@@ -1023,6 +1156,13 @@
     <Value lang="zh-tw">手動（無進行中的任務）</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Marauder</Key>
+    <Value lang="ja-jp">斧術士</Value>
+    <Value lang="zh-cn">斧术师</Value>
+    <Value lang="zh-tw">斧術師</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\ConfigComponents\SinglePlayerDutyConfigComponent.cs -->
     <Key>Melee Role Quests</Key>
     <Value lang="ja-jp">メレーロールクエスト</Value>
@@ -1058,11 +1198,25 @@
     <Value lang="zh-tw">未找到序列</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Monk</Key>
+    <Value lang="ja-jp">モンク</Value>
+    <Value lang="zh-cn">武僧</Value>
+    <Value lang="zh-tw">武僧</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Controller\CommandHandler.cs -->
     <Key>Mount ID: {0}, Name: {1}, Obtainable: {2}</Key>
     <Value lang="ja-jp">マウントID: {0}、名前: {1}、入手可能: {2}</Value>
     <Value lang="zh-cn">坐骑ID：{0}，名称：{1}，可获得：{2}</Value>
     <Value lang="zh-tw">坐騎ID：{0}，名稱：{1}，可獲得：{2}</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs -->
+    <Key>Mount Roulette</Key>
+    <Value lang="ja-jp">マウントルーレット</Value>
+    <Value lang="zh-cn">随机坐骑</Value>
+    <Value lang="zh-tw">隨機坐騎</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\JournalComponents\QuestRewardComponent.cs -->
@@ -1098,6 +1252,13 @@
     <Value lang="ja-jp">次のクエストは自分自身を参照してはいけません</Value>
     <Value lang="zh-cn">下一个任务不应引用自身</Value>
     <Value lang="zh-tw">下一個任務不應引用自身</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Ninja</Key>
+    <Value lang="ja-jp">忍者</Value>
+    <Value lang="zh-cn">忍者</Value>
+    <Value lang="zh-tw">忍者</Value>
   </Entry>
   <Entry>
     <!-- Found in: Validation\Validators\UniqueStartStopValidator.cs -->
@@ -1163,11 +1324,18 @@
     <Value lang="zh-tw">無任務路徑</Value>
   </Entry>
   <Entry>
-    <!-- Found in: Windows\QuestComponents\QuestTooltipComponent.cs -->
+    <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs, Windows\QuestComponents\QuestTooltipComponent.cs -->
     <Key>None</Key>
     <Value lang="ja-jp">なし</Value>
     <Value lang="zh-cn">无</Value>
     <Value lang="zh-tw">無</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs -->
+    <Key>None (manually pick quest)</Key>
+    <Value lang="ja-jp">なし（手動でクエストを選択）</Value>
+    <Value lang="zh-cn">无（手动选择任务）</Value>
+    <Value lang="zh-tw">無（手動選擇任務）</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\ConfigComponents\SinglePlayerDutyConfigComponent.cs -->
@@ -1304,6 +1472,13 @@
     <Value lang="zh-tw">其他任務</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Paladin</Key>
+    <Value lang="ja-jp">ナイト</Value>
+    <Value lang="zh-cn">骑士</Value>
+    <Value lang="zh-tw">騎士</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\ConfigComponents\PluginConfigComponent.cs -->
     <Key>Pandora's Box is a collection of tweaks.</Key>
     <Value lang="ja-jp">「Pandora's Box」は、各種の調整機能を集めたプラグインです。</Value>
@@ -1323,6 +1498,13 @@
     <Value lang="ja-jp">レンジロールクエスト</Value>
     <Value lang="zh-cn">远程物理职能任务</Value>
     <Value lang="zh-tw">遠程物理職能任務</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Pictomancer</Key>
+    <Value lang="ja-jp">ピクトマンサー</Value>
+    <Value lang="zh-cn">绘灵法师</Value>
+    <Value lang="zh-tw">繪靈法師</Value>
   </Entry>
   <Entry>
     <!-- Found in: Controller\CommandHandler.cs -->
@@ -1372,6 +1554,13 @@
     <Value lang="ja-jp">プリセット {0} が見つかりません</Value>
     <Value lang="zh-cn">未找到预设 {0}</Value>
     <Value lang="zh-tw">未找到預設 {0}</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Pugilist</Key>
+    <Value lang="ja-jp">格闘士</Value>
+    <Value lang="zh-cn">格斗家</Value>
+    <Value lang="zh-tw">格鬥家</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\ConfigComponents\SinglePlayerDutyConfigComponent.cs, Windows\QuestValidationWindow.cs -->
@@ -1541,11 +1730,25 @@
     <Value lang="zh-tw">優先執行的任務：</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Reaper</Key>
+    <Value lang="ja-jp">リーパー</Value>
+    <Value lang="zh-cn">钐镰客</Value>
+    <Value lang="zh-tw">鐮刀客</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\QuestComponents\QuickAccessButtonsComponent.cs -->
     <Key>Rebuild Navmesh</Key>
     <Value lang="ja-jp">ナビメッシュを再構築</Value>
     <Value lang="zh-cn">重建导航网格</Value>
     <Value lang="zh-tw">重建導航網格</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Red Mage</Key>
+    <Value lang="ja-jp">赤魔道士</Value>
+    <Value lang="zh-cn">赤魔法师</Value>
+    <Value lang="zh-tw">赤魔法師</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\QuestComponents\QuickAccessButtonsComponent.cs -->
@@ -1611,6 +1814,13 @@
     <Value lang="zh-tw">重置為預設</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Rogue</Key>
+    <Value lang="ja-jp">双剣士</Value>
+    <Value lang="zh-cn">双剑师</Value>
+    <Value lang="zh-tw">雙劍師</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\ConfigComponents\SinglePlayerDutyConfigComponent.cs -->
     <Key>Role Quests</Key>
     <Value lang="zh-tw">職能任務</Value>
@@ -1630,6 +1840,20 @@
     <Value lang="zh-tw">使用 BossMod 執行任務戰鬥</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Sage</Key>
+    <Value lang="ja-jp">賢者</Value>
+    <Value lang="zh-cn">贤者</Value>
+    <Value lang="zh-tw">賢者</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Samurai</Key>
+    <Value lang="ja-jp">侍</Value>
+    <Value lang="zh-cn">武士</Value>
+    <Value lang="zh-tw">武士</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Controller\CommandHandler.cs -->
     <Key>Saved {0} unlock links to log.</Key>
     <Value lang="ja-jp">{0} 件のアンロックリンクをログに保存しました。</Value>
@@ -1642,6 +1866,13 @@
     <Value lang="ja-jp">シナリオツリーデータが存在しません</Value>
     <Value lang="zh-cn">剧情树数据为空</Value>
     <Value lang="zh-tw">劇情樹資料為空</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Scholar</Key>
+    <Value lang="ja-jp">学者</Value>
+    <Value lang="zh-cn">学者</Value>
+    <Value lang="zh-tw">學者</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\JournalComponents\GatheringJournalComponent.cs -->
@@ -1705,6 +1936,13 @@
     <Value lang="ja-jp">次のクエストを {0}（{1}）に設定しました。</Value>
     <Value lang="zh-cn">已将下一个任务设置为 {0} ({1})。</Value>
     <Value lang="zh-tw">已將下一個任務設定為 {0} ({1})。</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Shadowbringers</Key>
+    <Value lang="ja-jp">漆黒のヴィランズ</Value>
+    <Value lang="zh-cn">暗影之逆焰</Value>
+    <Value lang="zh-tw">暗影之逆焰</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\QuestComponents\CreationUtilsComponent.cs -->
@@ -1840,6 +2078,20 @@
     <Value lang="zh-tw">停止命令</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Stormblood</Key>
+    <Value lang="ja-jp">紅蓮のリベレーター</Value>
+    <Value lang="zh-cn">红莲之狂潮</Value>
+    <Value lang="zh-tw">紅蓮之狂潮</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Summoner</Key>
+    <Value lang="ja-jp">召喚士</Value>
+    <Value lang="zh-cn">召唤师</Value>
+    <Value lang="zh-tw">召喚師</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\JournalComponents\GatheringJournalComponent.cs, Windows\JournalComponents\QuestJournalComponent.cs -->
     <Key>Supported</Key>
     <Value lang="ja-jp">サポート済み</Value>
@@ -1883,6 +2135,13 @@
     <Value lang="ja-jp">TerritoryId: {0}</Value>
     <Value lang="zh-cn">TerritoryId: {0}</Value>
     <Value lang="zh-tw">TerritoryId: {0}</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Thaumaturge</Key>
+    <Value lang="ja-jp">呪術士</Value>
+    <Value lang="zh-cn">咒术师</Value>
+    <Value lang="zh-tw">咒術師</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\ConfigComponents\DutyConfigComponent.cs -->
@@ -1963,7 +2222,7 @@
     <Value lang="zh-tw">九宮幻卡</Value>
   </Entry>
   <Entry>
-    <!-- Found in: Windows\QuestComponents\QuestTooltipComponent.cs -->
+    <!-- Found in: Windows\ConfigComponents\GeneralConfigComponent.cs, Windows\QuestComponents\QuestTooltipComponent.cs -->
     <Key>Twin Adder</Key>
     <Value lang="ja-jp">双蛇党</Value>
     <Value lang="zh-cn">双蛇党</Value>
@@ -2134,6 +2393,20 @@
     <Value lang="zh-tw">在任務地圖中顯示</Value>
   </Entry>
   <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Viper</Key>
+    <Value lang="ja-jp">ヴァイパー</Value>
+    <Value lang="zh-cn">蝰蛇剑士</Value>
+    <Value lang="zh-tw">蝰蛇劍士</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>Warrior</Key>
+    <Value lang="ja-jp">戦士</Value>
+    <Value lang="zh-cn">战士</Value>
+    <Value lang="zh-tw">戰士</Value>
+  </Entry>
+  <Entry>
     <!-- Found in: Windows\ConfigComponents\SinglePlayerDutyConfigComponent.cs -->
     <Key>When retrying a failed battle, it will always start at 'Normal' difficulty.</Key>
     <Value lang="zh-tw">重試失敗的戰鬥時，永遠會以「普通」難度開始。</Value>
@@ -2144,6 +2417,13 @@
     <Value lang="ja-jp">テスト中に以下の問題が見つかりました：</Value>
     <Value lang="zh-cn">测试期间发现以下问题：</Value>
     <Value lang="zh-tw">測試期間發現以下問題：</Value>
+  </Entry>
+  <Entry>
+    <!-- Found in: (dynamic) -->
+    <Key>White Mage</Key>
+    <Value lang="ja-jp">白魔道士</Value>
+    <Value lang="zh-cn">白魔法师</Value>
+    <Value lang="zh-tw">白魔法師</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\ConfigComponents\SinglePlayerDutyConfigComponent.cs -->

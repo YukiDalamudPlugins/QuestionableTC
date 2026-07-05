@@ -332,7 +332,7 @@ internal sealed class SinglePlayerDutyConfigComponent : ConfigComponent
         {
             if (_mainScenarioBattles.TryGetValue(expansion, out var dutyInfos))
             {
-                if (ImGui.CollapsingHeader(expansion.ToFriendlyString()))
+                if (ImGui.CollapsingHeader($"{_L(expansion.ToFriendlyString())}###Expansion{expansion}"))
                     DrawQuestTable($"Duties{expansion}", dutyInfos);
             }
         }
@@ -364,11 +364,11 @@ internal sealed class SinglePlayerDutyConfigComponent : ConfigComponent
                     ImGui.Spacing();
                 }
 
-                string jobName = classJob.ToFriendlyString();
+                string jobName = _L(classJob.ToFriendlyString());
                 if (classJob.IsClass())
-                    jobName += $" / {classJob.AsJob().ToFriendlyString()}";
+                    jobName += $" / {_L(classJob.AsJob().ToFriendlyString())}";
 
-                if (ImGui.CollapsingHeader(jobName))
+                if (ImGui.CollapsingHeader($"{jobName}###JobQuests{classJob}"))
                     DrawQuestTable($"JobQuests{classJob}", dutyInfos);
             }
         }

@@ -62,7 +62,6 @@ internal sealed class DalamudInitializer : IDisposable
         _configuration = configuration;
         _partyWatchDog = partyWatchDog;
         _logger = logger;
-        SetupI18N(_configuration.General.Language);
 
         _windowSystem.AddWindow(oneTimeSetupWindow);
         _windowSystem.AddWindow(questWindow);

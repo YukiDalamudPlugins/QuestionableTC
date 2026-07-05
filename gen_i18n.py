@@ -81,8 +81,16 @@ def extract_keys():
 # ---------- upstream ----------
 
 def load_upstream():
+    import subprocess
+    path = os.path.join(ROOT, 'upstream_i18n.xml')
+    if not os.path.exists(path):
+        xml = subprocess.run(
+            ['git', 'show', 'origin/new-main:Questionable/Resources/I18N.xml'],
+            cwd=ROOT, capture_output=True, text=True, encoding='utf-8', check=True).stdout
+        with open(path, 'w', encoding='utf-8') as fh:
+            fh.write(xml)
     up = {}
-    tree = ET.parse(os.path.join(ROOT, 'upstream_i18n.xml'))
+    tree = ET.parse(path)
     for e in tree.getroot().findall('Entry'):
         raw_key = e.find('Key').text or ''
         key = unescape_cs(raw_key).replace('\r\n', '\n')
@@ -126,7 +134,14 @@ def main():
     from opencc import OpenCC
     cc = OpenCC('s2twp')
     entries = extract_keys()
+    # keys produced at runtime (e.g. _L(classJob.ToFriendlyString())) that the
+    # source scan can't see; values live in extra_i18n.json
+    extra = json.load(open(os.path.join(ROOT, 'extra_i18n.json'), encoding='utf-8'))
+    for key in extra:
+        entries.setdefault(key, {'(dynamic)'})
     up = load_upstream()
+    for key, vals in extra.items():
+        up.setdefault(key, {}).update(vals)
 
     missing = []
     out = ['﻿<?xml version="1.0" encoding="utf-8"?>', '<I18N>']

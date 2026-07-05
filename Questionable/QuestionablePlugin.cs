@@ -88,7 +88,11 @@ public sealed class QuestionablePlugin : IDalamudPlugin
             serviceCollection.AddSingleton(gameInteropProvider);
             serviceCollection.AddSingleton(aetheryteList);
             serviceCollection.AddSingleton(new WindowSystem(nameof(Questionable)));
-            serviceCollection.AddSingleton((Configuration?)pluginInterface.GetPluginConfig() ?? new Configuration());
+            Configuration configuration = (Configuration?)pluginInterface.GetPluginConfig() ?? new Configuration();
+            serviceCollection.AddSingleton(configuration);
+            // must run before any DI component is constructed: _L() in field initializers
+            // and constructors would otherwise be evaluated before translations are loaded
+            DalamudInitializer.SetupI18N(configuration.General.Language);
 
             AddBasicFunctionsAndData(serviceCollection);
             AddTaskFactories(serviceCollection);
