@@ -947,7 +947,7 @@
     <Key>Immortal Flames</Key>
     <Value lang="ja-jp">不滅隊</Value>
     <Value lang="zh-cn">恒辉队</Value>
-    <Value lang="zh-tw">恆輝隊</Value>
+    <Value lang="zh-tw">不滅隊</Value>
   </Entry>
   <Entry>
     <!-- Found in: Windows\ConfigComponents\DutyConfigComponent.cs, Windows\PriorityWindow.cs -->
