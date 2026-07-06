@@ -456,8 +456,7 @@ internal sealed class QuestController : MiniTaskController<QuestController>
                 {
                     _startedQuest = _pendingQuest;
                     _pendingQuest = null;
-                    TryStopOnQuestAccepted(_startedQuest.Quest.Id);
-                    if (AutomationType == EAutomationType.Manual)
+                    if (TryStopOnQuestAccepted(_startedQuest.Quest.Id))
                         return;
                     CheckNextTasks("Pending quest accepted");
                 }
@@ -485,8 +484,7 @@ internal sealed class QuestController : MiniTaskController<QuestController>
 
                     _logger.LogDebug("Started: {StartedQuest}", _startedQuest?.Quest.Id);
                     _nextQuest = null;
-                    TryStopOnQuestAccepted(nextQuestId);
-                    if (AutomationType == EAutomationType.Manual)
+                    if (TryStopOnQuestAccepted(nextQuestId))
                         return;
                 }
             }
@@ -592,8 +590,7 @@ internal sealed class QuestController : MiniTaskController<QuestController>
                         _highlightObject.SetHighlight([]);
                         _logger.LogInformation("New quest: {QuestName}", quest.Info.Name);
 
-                        TryStopOnQuestAccepted(quest.Id);
-                        if (AutomationType == EAutomationType.Manual)
+                        if (TryStopOnQuestAccepted(quest.Id))
                             return;
 
                         _startedQuest = new QuestProgress(quest, currentSequence);
@@ -765,14 +762,15 @@ internal sealed class QuestController : MiniTaskController<QuestController>
 
     /// <summary>
     ///     Stops automation when a quest is accepted, if configured as an accept stopping point.
+    ///     Returns true if it actually stopped.
     /// </summary>
-    public void TryStopOnQuestAccepted(ElementId questId)
+    public bool TryStopOnQuestAccepted(ElementId questId)
     {
         if (AutomationType == EAutomationType.Manual)
-            return;
+            return false;
 
         if (!_configuration.Stop.Enabled || !_configuration.Stop.QuestsToStopWhenAccepted.Contains(questId))
-            return;
+            return false;
 
         _logger.LogInformation("Reached accept stopping point (quest: {QuestId})", questId);
         if (_questRegistry.TryGetQuest(questId, out Quest? quest))
@@ -785,6 +783,7 @@ internal sealed class QuestController : MiniTaskController<QuestController>
         _startedQuest = null;
         Stop($"Accept stopping point [{questId}] reached");
         _configuration.Stop.QuestsToStopWhenAccepted.Remove(questId);
+        return true;
     }
 
     public override void Stop(string label)
